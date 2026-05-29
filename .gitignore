@@ -1,4 +1,5 @@
 venv/*
 betting.db
-run.sh
 
+.claude/*
+__pycache__/*
