@@ -13,6 +13,7 @@ DEFAULT_SETTINGS = {
     "correct_result_points": 2,
     "budget": 100.0,
     "currency": "EUR",
+    "timezone": "Europe/Berlin",
 }
 
 
@@ -38,7 +39,9 @@ def init_db():
             away        TEXT NOT NULL,
             home_score  INTEGER,
             away_score  INTEGER,
-            played      INTEGER NOT NULL DEFAULT 0
+            played      INTEGER NOT NULL DEFAULT 0,
+            date_utc    TEXT,
+            time_utc    TEXT
         );
 
         CREATE TABLE IF NOT EXISTS odds (
@@ -58,13 +61,27 @@ def init_db():
         );
     """)
 
+    for col in ("date_utc TEXT", "time_utc TEXT"):
+        try:
+            conn.execute(f"ALTER TABLE games ADD COLUMN {col}")
+            conn.commit()
+        except Exception:
+            pass
+
     # Seed games if empty
     count = c.execute("SELECT COUNT(*) FROM games").fetchone()[0]
     if count == 0:
         for f in ALL_FIXTURES:
             c.execute(
-                "INSERT INTO games (match_number, stage, grp, home, away) VALUES (?,?,?,?,?)",
-                (f["match_number"], f["stage"], f.get("group"), f["home"], f["away"]),
+                "INSERT INTO games (match_number, stage, grp, home, away, date_utc) VALUES (?,?,?,?,?,?)",
+                (f["match_number"], f["stage"], f.get("group"), f["home"], f["away"], f.get("date_utc")),
+            )
+    else:
+        # Backfill dates for existing rows that were seeded before this column existed
+        for f in ALL_FIXTURES:
+            conn.execute(
+                "UPDATE games SET date_utc=? WHERE match_number=? AND date_utc IS NULL",
+                (f.get("date_utc"), f["match_number"]),
             )
 
     # Seed settings if empty
@@ -134,6 +151,16 @@ def update_game_result(game_id: int, home_score: int, away_score: int, home: str
             "UPDATE games SET home_score=?, away_score=?, played=1 WHERE id=?",
             (home_score, away_score, game_id),
         )
+    conn.commit()
+    conn.close()
+
+
+def update_game_schedule(game_id: int, home: str, away: str, date_utc: str, time_utc: str):
+    conn = get_conn()
+    conn.execute(
+        "UPDATE games SET home=?, away=?, date_utc=?, time_utc=? WHERE id=?",
+        (home, away, date_utc, time_utc, game_id),
+    )
     conn.commit()
     conn.close()
 

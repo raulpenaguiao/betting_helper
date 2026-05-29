@@ -4,6 +4,7 @@ Groups A–L, 4 teams each (48 teams total).
 Group stage: C(4,2)=6 games per group → 72 games.
 Knockout: R32(16) + R16(8) + QF(4) + SF(2) + 3rd(1) + F(1) = 32 games.
 """
+from datetime import date, timedelta
 
 GROUPS = {
     "A": ["Mexico", "USA", "Canada", "New Zealand"],
@@ -24,6 +25,27 @@ GROUPS = {
 # Actual draw hasn't happened yet (as of May 2026 data isn't fully official);
 # these are placeholder teams for the structure.
 
+def _group_date(match_number):
+    """Distribute 72 group games across June 11-25 (~5 per day)."""
+    return (date(2026, 6, 11) + timedelta(days=(match_number - 1) // 5)).isoformat()
+
+
+def _knockout_date(stage, slot):
+    """Return ISO date for a knockout game given its stage and 1-based slot within the stage."""
+    if stage == "Round of 32":
+        return (date(2026, 6, 28) + timedelta(days=(slot - 1) // 4)).isoformat()
+    if stage == "Round of 16":
+        return (date(2026, 7, 4) + timedelta(days=(slot - 1) // 2)).isoformat()
+    if stage == "Quarterfinal":
+        return (date(2026, 7, 10) + timedelta(days=(slot - 1) // 2)).isoformat()
+    if stage == "Semifinal":
+        return date(2026, 7, 14 + (slot - 1)).isoformat()
+    if stage == "Third Place":
+        return "2026-07-18"
+    if stage == "Final":
+        return "2026-07-19"
+
+
 def generate_group_fixtures():
     """Return list of group-stage fixture dicts."""
     fixtures = []
@@ -37,6 +59,7 @@ def generate_group_fixtures():
                     "home": teams[i],
                     "away": teams[j],
                     "match_number": game_num,
+                    "date_utc": _group_date(game_num),
                 })
                 game_num += 1
     return fixtures
@@ -63,6 +86,7 @@ def generate_knockout_fixtures():
                 "home": f"TBD {slot}",
                 "away": f"TBD {slot + 1}",
                 "match_number": match_num,
+                "date_utc": _knockout_date(stage_name, i + 1),
             })
             slot += 2
             match_num += 1

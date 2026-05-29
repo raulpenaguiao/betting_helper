@@ -26,9 +26,31 @@
   .tab-btn.active { background: var(--surface2); color: var(--text); }
   .header-actions { display: flex; gap: 8px; }
 
-  main { overflow: hidden; display: grid; grid-template-columns: 280px 1fr; }
+  main { overflow: hidden; display: grid; grid-template-columns: 260px 1fr; }
   #sidebar { background: var(--surface); border-right: 1px solid var(--border); overflow-y: auto; padding: 12px; }
   #content { overflow-y: auto; padding: 16px; }
+
+  /* Responsive column visibility */
+  .col-group, .col-odds, .col-action { }
+  @media (max-width: 900px) {
+    main { grid-template-columns: 200px 1fr; }
+    .col-group, .col-odds, .col-action { display: none; }
+  }
+  #btn-filters { display: none; }
+  @media (max-width: 640px) {
+    #btn-filters { display: inline-flex; }
+    main { grid-template-columns: 1fr; }
+    #sidebar {
+      display: none;
+      border-right: none; border-bottom: 1px solid var(--border);
+      padding: 12px; max-height: 50vh; overflow-y: auto;
+    }
+    #sidebar.open { display: block; }
+    .col-stage, .col-odds, .col-action { display: none; }
+    .settings-grid { grid-template-columns: 1fr; }
+    #content { padding: 10px; }
+    #game-panel { padding: 14px; }
+  }
 
   /* Buttons */
   .btn { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: var(--radius); border: 1px solid var(--border); cursor: pointer; font-size: 13px; font-weight: 500; transition: opacity .15s; white-space: nowrap; }
@@ -55,6 +77,10 @@
   th { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--border); white-space: nowrap; }
   td { padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
   tr:hover td { background: var(--surface2); }
+  tr.kb-focus td { background: #1a2a3a; }
+  tr.kb-focus td:first-child { border-left: 2px solid var(--accent2); }
+  th.th-sortable { cursor: pointer; user-select: none; }
+  th.th-sortable:hover { color: var(--text); }
   .match-teams { display: flex; align-items: center; gap: 8px; font-weight: 500; }
   .vs { color: var(--muted); font-size: 12px; }
   .badge { display: inline-block; padding: 2px 7px; border-radius: 12px; font-size: 11px; font-weight: 600; background: var(--surface2); color: var(--muted); }
@@ -73,7 +99,7 @@
   .odd-card:hover { border-color: var(--accent2); }
   .odd-score { font-size: 18px; font-weight: 700; }
   .odd-value { font-size: 22px; font-weight: 800; color: var(--gold); }
-  .odd-bookmaker { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .oddschecker-link { font-size: 12px; color: var(--accent2); }
   .odd-delete { position: absolute; top: 6px; right: 6px; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 14px; line-height: 1; }
   .odd-delete:hover { color: var(--danger); }
 
@@ -128,6 +154,7 @@
       <button class="tab-btn" data-tab="settings">Settings</button>
     </div>
     <div class="header-actions">
+      <button class="btn btn-ghost" id="btn-filters">☰ Filters</button>
       <button class="btn btn-blue" id="btn-update-results">
         <span>↺</span> Update Results
       </button>
@@ -167,6 +194,7 @@
             <div>
               <h2 id="panel-title"></h2>
               <div class="game-meta" id="panel-meta"></div>
+              <a id="panel-oddschecker" class="oddschecker-link" href="#" target="_blank" rel="noopener noreferrer">Oddschecker ↗</a>
             </div>
             <div style="display:flex;gap:8px;align-items:center;">
               <button class="btn btn-primary btn-sm" id="btn-add-odd" title="Add odd (A)">+ Add Odd</button>
@@ -184,13 +212,13 @@
         <table id="games-table">
           <thead>
             <tr>
-              <th>#</th>
-              <th>Match</th>
-              <th>Stage</th>
-              <th>Group</th>
-              <th>Score</th>
-              <th>Odds entered</th>
-              <th></th>
+              <th class="th-sortable col-time" id="th-date">Time</th>
+              <th class="col-match">Match</th>
+              <th class="col-stage">Stage</th>
+              <th class="col-group">Group</th>
+              <th class="col-score">Score</th>
+              <th class="col-odds">Odds</th>
+              <th class="col-action"></th>
             </tr>
           </thead>
           <tbody id="games-tbody"></tbody>
@@ -214,7 +242,23 @@
 
       <!-- Settings tab -->
       <div id="tab-settings" class="hidden">
-        <div class="section-header"><h2>Scoring Settings</h2></div>
+        <div class="section-header"><h2>Display</h2></div>
+        <div class="settings-grid" style="margin-bottom:24px;">
+          <div class="form-group">
+            <label>Timezone</label>
+            <select id="setting-timezone">
+              <option value="Europe/Berlin">CEST/CET — Central Europe</option>
+              <option value="UTC">UTC</option>
+              <option value="America/New_York">ET — US East</option>
+              <option value="America/Chicago">CT — US Central</option>
+              <option value="America/Los_Angeles">PT — US West</option>
+              <option value="America/Mexico_City">CT — Mexico City</option>
+              <option value="America/Sao_Paulo">BRT — Brazil</option>
+              <option value="Asia/Tokyo">JST — Japan</option>
+            </select>
+          </div>
+        </div>
+        <div class="section-header"><h2>Scoring</h2></div>
         <p style="color:var(--muted);font-size:13px;margin-bottom:16px;">
           Points awarded when your predicted scoreline matches the actual result in various ways.
           Points stack except exact score (which overrides the others).
@@ -243,13 +287,9 @@
       </div>
     </div>
     <div class="form-row">
-      <div class="form-group">
+      <div class="form-group" style="grid-column:1/-1;">
         <label>Decimal Odd</label>
         <input type="number" id="input-odd-value" min="1.01" step="0.01" value="2.50"/>
-      </div>
-      <div class="form-group">
-        <label>Bookmaker (optional)</label>
-        <input type="text" id="input-bookmaker" placeholder="e.g. Bet365"/>
       </div>
     </div>
     <p class="shortcut-hint">Open with <kbd>A</kbd> · Save with <kbd>Enter</kbd> · Cancel with <kbd>Esc</kbd></p>
@@ -291,8 +331,11 @@ let state = {
   selectedGameId: null,
   stageFilter: '',
   groupFilter: '',
-  settings: {},
+  settings: { timezone: 'Europe/Berlin' },
   activeTab: 'games',
+  keyboardIdx: -1,
+  sortField: 'date_utc',
+  sortDir: 1,
 };
 
 // ── API helpers ────────────────────────────────────────────────────────────
@@ -348,6 +391,7 @@ function initGroupFilter() {
   container.querySelectorAll('.filter-item').forEach(el => {
     el.addEventListener('click', () => {
       state.groupFilter = el.dataset.group;
+      state.keyboardIdx = -1;
       container.querySelectorAll('.filter-item').forEach(x => x.classList.toggle('active', x === el));
       renderGames();
     });
@@ -358,6 +402,7 @@ document.getElementById('stage-filter').addEventListener('click', e => {
   const item = e.target.closest('.filter-item');
   if (!item) return;
   state.stageFilter = item.dataset.stage;
+  state.keyboardIdx = -1;
   document.getElementById('stage-filter').querySelectorAll('.filter-item')
     .forEach(x => x.classList.toggle('active', x === item));
   // hide group filter for non-group stages
@@ -375,36 +420,77 @@ async function loadGames() {
 }
 
 function filteredGames() {
-  return state.games.filter(g => {
+  let games = state.games.filter(g => {
     if (state.stageFilter && g.stage !== state.stageFilter) return false;
     if (state.groupFilter && g.grp !== state.groupFilter) return false;
     return true;
   });
+  if (state.sortField === 'date_utc') {
+    games = [...games].sort((a, b) => {
+      const da = (a.date_utc || '') + 'T' + (a.time_utc || '00:00');
+      const db = (b.date_utc || '') + 'T' + (b.time_utc || '00:00');
+      return state.sortDir * (da < db ? -1 : da > db ? 1 : 0);
+    });
+  }
+  return games;
+}
+
+function tzAbbr(tz) {
+  try {
+    return new Intl.DateTimeFormat('en', { timeZone: tz, timeZoneName: 'short' })
+      .formatToParts(new Date()).find(p => p.type === 'timeZoneName')?.value || '';
+  } catch { return ''; }
+}
+
+function formatTime(date_utc, time_utc, tz) {
+  if (!date_utc) return null;
+  const zone = tz || 'Europe/Berlin';
+  const d = new Date(`${date_utc}T${time_utc ? time_utc + ':00' : '00:00:00'}Z`);
+  const parts = {};
+  new Intl.DateTimeFormat('en', {
+    timeZone: zone, month: 'short', day: 'numeric',
+    hour: '2-digit', minute: '2-digit', hour12: false,
+  }).formatToParts(d).forEach(p => { parts[p.type] = p.value; });
+  const dateStr = `${parts.month} ${parts.day}`;
+  return time_utc ? `${dateStr} · ${parts.hour}:${parts.minute}` : dateStr;
+}
+
+function teamSlug(name) {
+  return name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+}
+
+function oddscheckerUrl(home, away) {
+  return `https://www.oddschecker.com/football/world-cup/${teamSlug(home)}-v-${teamSlug(away)}/winner`;
 }
 
 function renderGames() {
   const games = filteredGames();
   document.getElementById('games-count').textContent = `${games.length} games`;
+  const th = document.getElementById('th-date');
+  const abbr = tzAbbr(state.settings.timezone);
+  const sortIndicator = state.sortField === 'date_utc' ? (state.sortDir === 1 ? ' ↑' : ' ↓') : '';
+  th.textContent = `Time${abbr ? ' (' + abbr + ')' : ''}${sortIndicator}`;
   const tbody = document.getElementById('games-tbody');
   tbody.innerHTML = '';
-  games.forEach(g => {
+  games.forEach((g, idx) => {
     const tr = document.createElement('tr');
     tr.style.cursor = 'pointer';
-    tr.classList.toggle('active', g.id === state.selectedGameId);
+    tr.classList.toggle('kb-focus', idx === state.keyboardIdx);
     const score = g.played
       ? `<span class="score">${g.home_score} – ${g.away_score}</span>`
       : '<span style="color:var(--muted)">—</span>';
     const oddsCount = g.odds?.length || 0;
+    const timeStr = formatTime(g.date_utc, g.time_utc, state.settings.timezone);
     tr.innerHTML = `
-      <td><span class="rank-num">${g.match_number}</span></td>
-      <td><div class="match-teams">${g.home} <span class="vs">vs</span> ${g.away}</div></td>
-      <td>${g.stage}</td>
-      <td>${g.grp ? `<span class="badge badge-group">${g.grp}</span>` : '—'}</td>
-      <td>${score} ${g.played ? '<span class="played-dot" title="Played"></span>' : ''}</td>
-      <td><span class="odds-count">${oddsCount > 0 ? `${oddsCount} odds` : '<span style="color:var(--muted)">none</span>'}</span></td>
-      <td><button class="btn btn-sm btn-ghost">Select ›</button></td>
+      <td class="col-time">${timeStr || '<span style="color:var(--muted)">—</span>'}</td>
+      <td class="col-match"><div class="match-teams">${g.home} <span class="vs">vs</span> ${g.away}</div></td>
+      <td class="col-stage">${g.stage}</td>
+      <td class="col-group">${g.grp ? `<span class="badge badge-group">${g.grp}</span>` : '—'}</td>
+      <td class="col-score">${score} ${g.played ? '<span class="played-dot" title="Played"></span>' : ''}</td>
+      <td class="col-odds"><span class="odds-count">${oddsCount > 0 ? `${oddsCount} odds` : '<span style="color:var(--muted)">none</span>'}</span></td>
+      <td class="col-action"><button class="btn btn-sm btn-ghost">Select ›</button></td>
     `;
-    tr.addEventListener('click', () => selectGame(g.id));
+    tr.addEventListener('click', () => { state.keyboardIdx = idx; selectGame(g.id); });
     tbody.appendChild(tr);
   });
 }
@@ -418,9 +504,14 @@ function selectGame(id) {
   const panel = document.getElementById('game-panel');
   panel.classList.remove('hidden');
   document.getElementById('panel-title').textContent = `${game.home} vs ${game.away}`;
+  const gameTimeStr = formatTime(game.date_utc, game.time_utc, state.settings.timezone);
   document.getElementById('panel-meta').textContent =
-    `${game.stage}${game.grp ? ` · Group ${game.grp}` : ''} · Match #${game.match_number}` +
+    `${game.stage}${game.grp ? ` · Group ${game.grp}` : ''}` +
+    (gameTimeStr ? ` · ${gameTimeStr}` : '') +
     (game.played ? ` · Result: ${game.home_score}–${game.away_score}` : '');
+  const ocLink = document.getElementById('panel-oddschecker');
+  ocLink.href = oddscheckerUrl(game.home, game.away);
+  ocLink.style.display = (game.home.startsWith('TBD') || game.away.startsWith('TBD')) ? 'none' : '';
 
   renderPanelOdds(game);
   renderGames(); // re-highlight row
@@ -440,7 +531,6 @@ function renderPanelOdds(game) {
     card.innerHTML = `
       <div class="odd-score">${o.home_goals} – ${o.away_goals}</div>
       <div class="odd-value">${o.odd_value.toFixed(2)}</div>
-      <div class="odd-bookmaker">${o.bookmaker || ''}</div>
       <button class="odd-delete" data-id="${o.id}" title="Delete">✕</button>
     `;
     card.querySelector('.odd-delete').addEventListener('click', async (e) => {
@@ -480,7 +570,6 @@ function openOddModal(prefill = null) {
   document.getElementById('input-home-goals').value = prefill?.home_goals ?? 1;
   document.getElementById('input-away-goals').value = prefill?.away_goals ?? 0;
   document.getElementById('input-odd-value').value = prefill?.odd_value?.toFixed(2) ?? '2.50';
-  document.getElementById('input-bookmaker').value = prefill?.bookmaker ?? '';
   document.getElementById('modal-odd').classList.remove('hidden');
   document.getElementById('input-home-goals').focus();
 }
@@ -491,12 +580,11 @@ async function saveOdd() {
   const homeGoals = parseInt(document.getElementById('input-home-goals').value);
   const awayGoals = parseInt(document.getElementById('input-away-goals').value);
   const oddValue = parseFloat(document.getElementById('input-odd-value').value);
-  const bookmaker = document.getElementById('input-bookmaker').value.trim() || null;
   if (isNaN(homeGoals) || isNaN(awayGoals) || isNaN(oddValue) || oddValue <= 1) {
     toast('Invalid input. Odd must be > 1.0', 'error'); return;
   }
   try {
-    await PUT(`/api/games/${gameId}/odds`, { home_goals: homeGoals, away_goals: awayGoals, odd_value: oddValue, bookmaker });
+    await PUT(`/api/games/${gameId}/odds`, { home_goals: homeGoals, away_goals: awayGoals, odd_value: oddValue });
     document.getElementById('modal-odd').classList.add('hidden');
     await refreshGame(gameId);
     toast('Odd saved');
@@ -543,6 +631,26 @@ document.addEventListener('keydown', (e) => {
   if (tag === 'INPUT' || tag === 'TEXTAREA') return;
 
   if (e.key === 'a' || e.key === 'A') { openOddModal(); return; }
+
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    const games = filteredGames();
+    if (!games.length) return;
+    if (e.key === 'ArrowDown') state.keyboardIdx = Math.min(state.keyboardIdx + 1, games.length - 1);
+    else state.keyboardIdx = Math.max(state.keyboardIdx - 1, 0);
+    renderGames();
+    document.querySelector('tr.kb-focus')?.scrollIntoView({ block: 'nearest' });
+    return;
+  }
+
+  if (e.key === 'Enter') {
+    const games = filteredGames();
+    if (state.keyboardIdx >= 0 && games[state.keyboardIdx]) {
+      selectGame(games[state.keyboardIdx].id);
+    }
+    return;
+  }
+
   if (e.key === 'Escape') {
     document.getElementById('modal-odd').classList.add('hidden');
     document.getElementById('modal-result').classList.add('hidden');
@@ -616,7 +724,7 @@ function renderBestBets(bets) {
       <td class="rank-num">${i + 1}</td>
       <td>${b.home} <span class="vs">vs</span> ${b.away}<br>
           <span style="color:var(--muted);font-size:11px;">${b.stage}${b.group ? ` · G${b.group}` : ''}</span></td>
-      <td><strong>${b.home_goals}–${b.away_goals}</strong>${b.bookmaker ? `<br><span style="color:var(--muted);font-size:11px;">${b.bookmaker}</span>` : ''}</td>
+      <td><strong>${b.home_goals}–${b.away_goals}</strong></td>
       <td style="color:var(--gold);font-weight:700;">${b.odd_value.toFixed(2)}</td>
       <td>
         <div class="prob-bar-wrap"><div class="prob-bar" style="width:${Math.min(b.implied_prob_pct, 100)}%"></div></div>
@@ -647,6 +755,10 @@ const SETTING_LABELS = {
 
 async function loadSettings() {
   state.settings = await GET('/api/settings');
+  // Set timezone select
+  const tzEl = document.getElementById('setting-timezone');
+  if (tzEl && state.settings.timezone) tzEl.value = state.settings.timezone;
+  // Render scoring form
   const form = document.getElementById('settings-form');
   form.innerHTML = '';
   Object.entries(SETTING_LABELS).forEach(([key, label]) => {
@@ -662,6 +774,8 @@ async function loadSettings() {
 
 document.getElementById('btn-save-settings').addEventListener('click', async () => {
   const updates = {};
+  const tzEl = document.getElementById('setting-timezone');
+  if (tzEl) updates.timezone = tzEl.value;
   Object.keys(SETTING_LABELS).forEach(key => {
     const el = document.getElementById(`setting-${key}`);
     if (!el) return;
@@ -670,12 +784,38 @@ document.getElementById('btn-save-settings').addEventListener('click', async () 
   });
   try {
     await PATCH('/api/settings', updates);
+    Object.assign(state.settings, updates);
+    renderGames();
     toast('Settings saved');
   } catch (e) { toast(`Error: ${e.message}`, 'error'); }
 });
 
+// ── mobile filters toggle ──────────────────────────────────────────────────
+document.getElementById('btn-filters').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('open');
+});
+
+// Close sidebar on mobile after selecting a filter
+document.getElementById('sidebar').addEventListener('click', e => {
+  if (e.target.closest('.filter-item') && window.innerWidth <= 640) {
+    document.getElementById('sidebar').classList.remove('open');
+  }
+});
+
+// ── date column sort ───────────────────────────────────────────────────────
+document.getElementById('th-date').addEventListener('click', () => {
+  if (state.sortField === 'date_utc') {
+    state.sortDir *= -1;
+  } else {
+    state.sortField = 'date_utc';
+    state.sortDir = 1;
+  }
+  state.keyboardIdx = -1;
+  renderGames();
+});
+
 // ── init ───────────────────────────────────────────────────────────────────
-loadGames();
+loadSettings().then(() => loadGames());
 </script>
 </body>
 </html>

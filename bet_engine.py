@@ -100,7 +100,6 @@ def compute_best_bets(top_n: int = 20):
                 "home_goals": o["home_goals"],
                 "away_goals": o["away_goals"],
                 "odd_value": o["odd_value"],
-                "bookmaker": o.get("bookmaker"),
                 "implied_prob_pct": round(raw_prob * 100, 2),
                 "fair_prob_pct": round(fair_prob * 100, 2),
                 "expected_points": round(expected_pts, 3),
