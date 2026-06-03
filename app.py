@@ -94,8 +94,8 @@ class OddBody(BaseModel):
 def upsert_odd(game_id: int, body: OddBody):
     if not db.get_game(game_id):
         raise HTTPException(404, "Game not found")
-    if body.odd_value <= 1.0:
-        raise HTTPException(400, "Odd must be > 1.0")
+    if body.odd_value < 1.0:
+        raise HTTPException(400, "Odd must be >= 1.0")
     db.upsert_odd(game_id, body.home_goals, body.away_goals, body.odd_value, body.bookmaker)
     return {"ok": True}
 

@@ -119,6 +119,29 @@
   .form-group input:focus, .form-group select:focus { border-color: var(--accent2); }
   .form-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
   .shortcut-hint { color: var(--muted); font-size: 11px; text-align: center; margin-top: 8px; }
+  .format-toggle { display: inline-flex; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+  .format-toggle button { padding: 2px 7px; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 11px; font-weight: 700; font-family: monospace; transition: background .1s, color .1s; white-space: nowrap; }
+  .format-toggle button.active { background: var(--accent2); color: #fff; }
+  /* Odd-entry grid modal */
+  .modal-odd-wide { max-width: 680px; width: 100%; }
+  .odd-modal-body { display: flex; gap: 20px; align-items: flex-start; margin-top: 4px; }
+  .odd-grid-table { display: grid; grid-template-columns: 22px repeat(4, 58px); gap: 3px; user-select: none; }
+  .odd-grid-collabel { display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--muted); font-weight: 600; height: 22px; }
+  .odd-grid-rowlabel { display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--muted); font-weight: 600; }
+  .odd-grid-cell { width: 58px; height: 58px; border: 1px solid var(--border); border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; transition: border-color .1s; }
+  .odd-grid-cell .cell-score { font-size: 10px; color: var(--muted); }
+  .odd-grid-cell .cell-value { font-size: 12px; font-weight: 700; color: var(--gold); }
+  .odd-grid-cell .cell-implied { font-size: 10px; color: var(--muted); font-weight: 500; }
+  .odd-grid-cell.has-odd { background: rgba(35,134,54,.15); border-color: var(--accent); }
+  .odd-grid-cell.selected { border-color: var(--accent2); box-shadow: 0 0 0 2px rgba(31,111,235,.35); }
+  .odd-grid-axis-label { font-size: 10px; color: var(--muted); text-align: center; margin-bottom: 4px; padding-left: 18px; }
+  .odd-away-axis-label { display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 10px; color: var(--muted); gap: 2px; width: 14px; flex-shrink: 0; }
+  .grid-hint { font-size: 11px; color: var(--muted); margin-top: 6px; min-height: 14px; }
+  .odd-input-panel { flex: 1; min-width: 150px; display: flex; flex-direction: column; gap: 10px; }
+  .selected-cell-info { font-size: 18px; font-weight: 700; color: var(--text); }
+  .odd-input-panel input { font-size: 12px; padding: 5px 7px; }
+  .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .modal-header h3 { margin-bottom: 0; }
   kbd { background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px; font-size: 11px; font-family: monospace; }
 
   /* Settings */
@@ -141,6 +164,30 @@
   .prob-bar-wrap { background: var(--surface2); border-radius: 4px; height: 6px; width: 80px; display: inline-block; vertical-align: middle; overflow: hidden; }
   .prob-bar { height: 100%; background: var(--accent2); border-radius: 4px; }
 
+  .col-bestbet { white-space: nowrap; }
+  @media (max-width: 900px) { .col-bestbet { display: none; } }
+  .best-bet-btn { background: none; border: 1px solid var(--border); cursor: pointer; padding: 2px 8px; border-radius: 6px; font-size: 13px; font-weight: 600; color: var(--text); text-align: left; }
+  .best-bet-btn:hover { background: var(--surface2); border-color: var(--accent2); }
+  .modal-insight-wide { max-width: 820px; width: 100%; }
+  .insight-layout { display: flex; gap: 20px; align-items: flex-start; margin-top: 4px; }
+  .insight-grid-table { display: grid; grid-template-columns: 22px repeat(4, 68px); gap: 3px; user-select: none; }
+  .insight-grid-cell { width: 68px; height: 68px; border: 1px solid var(--border); border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; cursor: pointer; transition: border-color .1s, opacity .1s; }
+  .insight-grid-cell .cell-prob { font-size: 11px; font-weight: 600; color: var(--text); }
+  .insight-grid-cell .cell-pts { font-size: 11px; font-weight: 700; }
+  .insight-grid-cell .cell-pts.pts-exact { color: var(--gold); }
+  .insight-grid-cell .cell-pts.pts-partial { color: var(--accent); }
+  .insight-grid-cell.no-pts { opacity: 0.45; }
+  .insight-grid-cell.has-odd { background: rgba(35,134,54,.12); border-color: var(--accent); }
+  .insight-grid-cell.best-bet { border-color: var(--gold); }
+  .insight-grid-cell.selected { border-color: var(--accent2); box-shadow: 0 0 0 2px rgba(31,111,235,.35); opacity: 1; }
+  .model-params-box { font-size: 11px; font-family: monospace; color: var(--muted); line-height: 1.9; }
+  .insight-right { flex: 1; min-width: 220px; display: flex; flex-direction: column; gap: 12px; }
+  .insight-pred-score { font-size: 26px; font-weight: 800; color: var(--text); letter-spacing: .03em; }
+  .insight-ev-value { font-size: 20px; font-weight: 700; color: var(--accent2); }
+  .breakdown-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  .breakdown-table th { color: var(--muted); font-weight: 600; text-align: left; padding: 3px 5px; border-bottom: 1px solid var(--border); }
+  .breakdown-table td { padding: 3px 5px; border-bottom: 1px solid var(--border); }
+  .breakdown-table tr:last-child td { border-bottom: none; font-weight: 700; color: var(--accent2); }
   .hidden { display: none !important; }
 </style>
 </head>
@@ -154,6 +201,10 @@
       <button class="tab-btn" data-tab="settings">Settings</button>
     </div>
     <div class="header-actions">
+      <div class="format-toggle">
+        <button id="toggle-decimal" type="button">x.xx</button>
+        <button id="toggle-fractional" type="button">x/x</button>
+      </div>
       <button class="btn btn-ghost" id="btn-filters">☰ Filters</button>
       <button class="btn btn-blue" id="btn-update-results">
         <span>↺</span> Update Results
@@ -198,11 +249,11 @@
             </div>
             <div style="display:flex;gap:8px;align-items:center;">
               <button class="btn btn-primary btn-sm" id="btn-add-odd" title="Add odd (A)">+ Add Odd</button>
-              <button class="btn btn-ghost btn-sm" id="btn-set-result">Set Result</button>
               <button class="btn btn-ghost btn-sm" id="btn-close-panel">✕ Close</button>
             </div>
           </div>
           <div id="panel-odds-grid" class="odds-grid"></div>
+          <div id="panel-model-params" class="model-params-box" style="margin-top:10px;"></div>
         </div>
 
         <div class="section-header">
@@ -218,7 +269,7 @@
               <th class="col-group">Group</th>
               <th class="col-score">Score</th>
               <th class="col-odds">Odds</th>
-              <th class="col-action"></th>
+              <th class="col-bestbet">Best Bet</th>
             </tr>
           </thead>
           <tbody id="games-tbody"></tbody>
@@ -243,21 +294,7 @@
       <!-- Settings tab -->
       <div id="tab-settings" class="hidden">
         <div class="section-header"><h2>Display</h2></div>
-        <div class="settings-grid" style="margin-bottom:24px;">
-          <div class="form-group">
-            <label>Timezone</label>
-            <select id="setting-timezone">
-              <option value="Europe/Berlin">CEST/CET — Central Europe</option>
-              <option value="UTC">UTC</option>
-              <option value="America/New_York">ET — US East</option>
-              <option value="America/Chicago">CT — US Central</option>
-              <option value="America/Los_Angeles">PT — US West</option>
-              <option value="America/Mexico_City">CT — Mexico City</option>
-              <option value="America/Sao_Paulo">BRT — Brazil</option>
-              <option value="Asia/Tokyo">JST — Japan</option>
-            </select>
-          </div>
-        </div>
+        <div id="timezone-settings-container" style="margin-bottom:24px;"></div>
         <div class="section-header"><h2>Scoring</h2></div>
         <p style="color:var(--muted);font-size:13px;margin-bottom:16px;">
           Points awarded when your predicted scoreline matches the actual result in various ways.
@@ -274,28 +311,49 @@
 
 <!-- Add Odd Modal -->
 <div id="modal-odd" class="modal-overlay hidden">
-  <div class="modal">
-    <h3 id="modal-odd-title">Add / Update Odd</h3>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Home Goals</label>
-        <input type="number" id="input-home-goals" min="0" max="20" value="1"/>
-      </div>
-      <div class="form-group">
-        <label>Away Goals</label>
-        <input type="number" id="input-away-goals" min="0" max="20" value="0"/>
-      </div>
+  <div class="modal modal-odd-wide">
+    <div class="modal-header">
+      <h3 id="modal-odd-title">Add / Edit Odds</h3>
+      <button class="btn btn-ghost btn-sm" id="btn-modal-close-x" style="padding:2px 8px;font-size:16px;line-height:1;">×</button>
     </div>
-    <div class="form-row">
-      <div class="form-group" style="grid-column:1/-1;">
-        <label>Decimal Odd</label>
-        <input type="number" id="input-odd-value" min="1.01" step="0.01" value="2.50"/>
+    <div class="odd-modal-body">
+      <div id="odd-grid-wrap">
+        <div class="odd-grid-axis-label">← Home Goals →<br><span id="home-team-abbr" style="color:var(--muted);font-size:10px;"></span></div>
+        <div style="display:flex;align-items:stretch;gap:4px;">
+          <div class="odd-away-axis-label">
+            <span>↑</span><span>away</span><span>goals</span><span>↓</span><span id="away-team-abbr" style="margin-top:2px;"></span>
+          </div>
+          <div id="odd-grid"></div>
+        </div>
+        <div class="grid-hint" id="grid-hint"></div>
       </div>
-    </div>
-    <p class="shortcut-hint">Open with <kbd>A</kbd> · Save with <kbd>Enter</kbd> · Cancel with <kbd>Esc</kbd></p>
-    <div class="form-actions">
-      <button class="btn btn-ghost" id="btn-modal-cancel">Cancel</button>
-      <button class="btn btn-primary" id="btn-modal-save">Save Odd</button>
+      <div class="odd-input-panel" id="odd-input-panel">
+        <div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:2px;">Selected</div>
+          <div class="selected-cell-info" id="selected-cell-label">—</div>
+        </div>
+        <div id="input-decimal-row">
+          <div class="form-group">
+            <label>Decimal (≥ 1.0)</label>
+            <input type="number" id="input-odd-value" min="1.0" step="0.01" placeholder="2.50"/>
+          </div>
+        </div>
+        <div id="input-fractional-row" style="display:none;align-items:flex-end;gap:8px;">
+          <div class="form-group" style="flex:1;">
+            <label>Profit</label>
+            <input type="number" id="input-odd-num" min="0" step="1" placeholder="3"/>
+          </div>
+          <span style="padding-bottom:9px;color:var(--muted);font-size:18px;font-weight:700;">/</span>
+          <div class="form-group" style="flex:1;">
+            <label>Stake</label>
+            <input type="number" id="input-odd-den" min="1" step="1" placeholder="2"/>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:auto;padding-top:12px;">
+          <button class="btn btn-danger btn-sm hidden" id="btn-delete-odd">Delete</button>
+          <button class="btn btn-primary btn-sm" id="btn-modal-close" style="margin-left:auto;">Confirm</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -321,6 +379,44 @@
   </div>
 </div>
 
+<!-- Scoreline Insight Modal -->
+<div id="modal-insight" class="modal-overlay hidden">
+  <div class="modal modal-insight-wide">
+    <div class="modal-header">
+      <h3 id="modal-insight-title">Scoreline Analysis</h3>
+      <button id="btn-insight-close" class="btn btn-ghost btn-sm" style="padding:2px 8px;font-size:16px;line-height:1;">×</button>
+    </div>
+    <div class="insight-layout">
+      <div>
+        <div class="odd-grid-axis-label">← Home Goals →<br><span id="insight-home-abbr" style="color:var(--muted);font-size:10px;"></span></div>
+        <div style="display:flex;align-items:stretch;gap:4px;">
+          <div class="odd-away-axis-label">
+            <span>↑</span><span>away</span><span>goals</span><span>↓</span>
+            <span id="insight-away-abbr" style="margin-top:2px;"></span>
+          </div>
+          <div id="insight-grid"></div>
+        </div>
+        <div class="grid-hint">↑↓←→ navigate · Esc: close</div>
+      </div>
+      <div class="insight-right">
+        <div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:2px;">Prediction</div>
+          <div class="insight-pred-score" id="insight-pred-score">—</div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:2px;">Expected score</div>
+          <div class="insight-ev-value" id="insight-ev-value">—</div>
+        </div>
+        <div id="insight-breakdown"></div>
+        <div>
+          <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">Model</div>
+          <div id="insight-model-params" class="model-params-box"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Toast container -->
 <div id="toast-container"></div>
 
@@ -336,6 +432,13 @@ let state = {
   keyboardIdx: -1,
   sortField: 'date_utc',
   sortDir: 1,
+  oddFormat: 'fractional',
+  gridCursor: { home: 1, away: 0 },
+  gridOffset: { home: 0, away: 0 },
+  gridFocus: 'grid',
+  insightCursor: { home: 1, away: 0 },
+  insightOffset: { home: 0, away: 0 },
+  insightGameId: null,
 };
 
 // ── API helpers ────────────────────────────────────────────────────────────
@@ -442,7 +545,7 @@ function tzAbbr(tz) {
   } catch { return ''; }
 }
 
-function formatTime(date_utc, time_utc, tz) {
+function formatTime(date_utc, time_utc, tz, timeOnly = false) {
   if (!date_utc) return null;
   const zone = tz || 'Europe/Berlin';
   const d = new Date(`${date_utc}T${time_utc ? time_utc + ':00' : '00:00:00'}Z`);
@@ -451,6 +554,7 @@ function formatTime(date_utc, time_utc, tz) {
     timeZone: zone, month: 'short', day: 'numeric',
     hour: '2-digit', minute: '2-digit', hour12: false,
   }).formatToParts(d).forEach(p => { parts[p.type] = p.value; });
+  if (timeOnly && time_utc) return `${parts.hour}:${parts.minute}`;
   const dateStr = `${parts.month} ${parts.day}`;
   return time_utc ? `${dateStr} · ${parts.hour}:${parts.minute}` : dateStr;
 }
@@ -463,11 +567,191 @@ function oddscheckerUrl(home, away) {
   return `https://www.oddschecker.com/football/world-cup/${teamSlug(home)}-v-${teamSlug(away)}/winner`;
 }
 
+function gameBestOdd(game) {
+  if (!game.odds?.length) return null;
+  const exactPts = state.settings.exact_score_points ?? 6;
+  let best = null, bestEv = -Infinity;
+  for (const o of game.odds) {
+    const ev = (1 / o.odd_value) * exactPts;
+    if (ev > bestEv) { bestEv = ev; best = o; }
+  }
+  return best;
+}
+
+function bestBetCell(game) {
+  if (game.played || !game.odds?.length) return '<span style="color:var(--muted)">—</span>';
+  const best = gameBestOdd(game);
+  if (!best) return '<span style="color:var(--muted)">—</span>';
+  return `<button class="best-bet-btn" data-game-id="${game.id}">${best.home_goals}–${best.away_goals}</button>`;
+}
+
+function gameModelParams(game) {
+  const greenCells = (game?.odds || []).map(o => ({ x: o.home_goals, y: o.away_goals, odd: o.odd_value }));
+  const { p, q } = fitModelParams(greenCells);
+  const C = (1 + MODEL_MARGIN) * (1 - p) * (1 - q);
+  return { C, p, q };
+}
+
+function openInsightModal(game) {
+  state.insightGameId = game.id;
+  document.getElementById('modal-insight-title').textContent = `Scoreline Analysis · ${game.home} vs ${game.away}`;
+  document.getElementById('insight-home-abbr').textContent = `(${game.home.slice(0, 3).toUpperCase()})`;
+  document.getElementById('insight-away-abbr').textContent = `(${game.away.slice(0, 3).toUpperCase()})`;
+  const best = gameBestOdd(game);
+  if (best) {
+    state.insightCursor = { home: best.home_goals, away: best.away_goals };
+    state.insightOffset = { home: Math.max(0, best.home_goals - 1), away: Math.max(0, best.away_goals - 1) };
+  } else {
+    state.insightCursor = { home: 0, away: 0 };
+    state.insightOffset = { home: 0, away: 0 };
+  }
+  renderInsightGrid(game);
+  document.getElementById('modal-insight').classList.remove('hidden');
+}
+
+const _sign = x => (x > 0) - (x < 0);
+
+function computePoints(predH, predA, actH, actA) {
+  const s = state.settings;
+  const predDraw = predH === predA, actDraw = actH === actA;
+  if (predH === actH && predA === actA)
+    return predDraw ? (s.exact_tie_points ?? s.exact_score_points ?? 6) : (s.exact_score_points ?? 6);
+  if ((predH - predA) === (actH - actA))
+    return (predDraw && actDraw) ? (s.correct_tie_points ?? s.correct_goal_diff_points ?? 1) : (s.correct_goal_diff_points ?? 1);
+  if (_sign(predH - predA) === _sign(actH - actA)) return s.correct_result_points ?? 1;
+  return 0;
+}
+
+function computeInsightBreakdown(predH, predA, C, p, q) {
+  const MAX = 10;
+  const rows = [];
+  let ev = 0;
+  for (let h = 0; h <= MAX; h++) {
+    for (let a = 0; a <= MAX; a++) {
+      const pts = computePoints(predH, predA, h, a);
+      if (pts === 0) continue;
+      const prob = C * Math.pow(p, h) * Math.pow(q, a);
+      const contrib = prob * pts;
+      ev += contrib;
+      rows.push({ h, a, prob, pts, contrib });
+    }
+  }
+  rows.sort((x, y) => y.contrib - x.contrib);
+  return { rows, ev };
+}
+
+function renderInsightGrid(game) {
+  const oddsMap = {};
+  (game?.odds || []).forEach(o => { oddsMap[`${o.home_goals}-${o.away_goals}`] = o; });
+  const { C, p, q } = gameModelParams(game);
+  const best = gameBestOdd(game);
+  const { predH, predA } = { predH: state.insightCursor.home, predA: state.insightCursor.away };
+
+  // Right panel — model params
+  document.getElementById('insight-model-params').innerHTML =
+    `C = ${C.toFixed(4)}<br>p = ${p.toFixed(3)}<br>q = ${q.toFixed(3)}`;
+
+  // Right panel — prediction & EV
+  document.getElementById('insight-pred-score').textContent = `${predH}–${predA}`;
+  const { rows, ev } = computeInsightBreakdown(predH, predA, C, p, q);
+  document.getElementById('insight-ev-value').textContent = ev.toFixed(3);
+
+  // Right panel — breakdown table (top 15 non-zero rows)
+  const BREAKDOWN_ROWS = 20;
+  const topRows = rows.slice(0, BREAKDOWN_ROWS);
+  let bhtml = `<table class="breakdown-table">
+    <thead><tr><th>Score</th><th>Prob</th><th>Pts</th><th>Contrib</th></tr></thead><tbody>`;
+  for (const r of topRows) {
+    bhtml += `<tr>
+      <td>${r.h}–${r.a}</td>
+      <td>${(r.prob * 100).toFixed(1)}%</td>
+      <td>${r.pts}</td>
+      <td>${r.contrib.toFixed(3)}</td>
+    </tr>`;
+  }
+  for (let i = topRows.length; i < BREAKDOWN_ROWS; i++)
+    bhtml += `<tr><td>&nbsp;</td><td></td><td></td><td></td></tr>`;
+  bhtml += `<tr><td colspan="3">Expected score</td><td>${ev.toFixed(3)}</td></tr>`;
+  bhtml += '</tbody></table>';
+  document.getElementById('insight-breakdown').innerHTML = bhtml;
+
+  // Grid
+  let html = '<div class="insight-grid-table">';
+  html += '<div></div>';
+  for (let c = 0; c < 4; c++) html += `<div class="odd-grid-collabel">${state.insightOffset.home + c}</div>`;
+  for (let r = 0; r < 4; r++) {
+    const a = state.insightOffset.away + r;
+    html += `<div class="odd-grid-rowlabel">${a}</div>`;
+    for (let c = 0; c < 4; c++) {
+      const h = state.insightOffset.home + c;
+      const odd = oddsMap[`${h}-${a}`];
+      const prob = C * Math.pow(p, h) * Math.pow(q, a);
+      const pts = computePoints(predH, predA, h, a);
+      const sel = predH === h && predA === a;
+      const isBest = best && best.home_goals === h && best.away_goals === a;
+      const sameDir = _sign(predH - predA) === _sign(h - a);
+      let cls = 'insight-grid-cell';
+      if (sel) cls += ' selected';
+      else if (isBest) cls += ' best-bet';
+      if (!sameDir && !sel) cls += ' no-pts';
+      const ptsClass = sel ? 'pts-exact' : (pts > 0 ? (pts >= (state.settings.exact_score_points ?? 6) ? 'pts-exact' : 'pts-partial') : '');
+      html += `<div class="${cls}" data-home="${h}" data-away="${a}">
+        <span class="cell-score">${h}–${a}</span>
+        <span class="cell-prob">${(prob * 100).toFixed(1)}%</span>
+        ${pts > 0 ? `<span class="cell-pts ${ptsClass}">${pts}pts</span>` : ''}
+      </div>`;
+    }
+  }
+  html += '</div>';
+  document.getElementById('insight-grid').innerHTML = html;
+
+  document.getElementById('insight-grid').querySelectorAll('.insight-grid-cell').forEach(cell => {
+    cell.addEventListener('click', () => {
+      state.insightCursor.home = parseInt(cell.dataset.home);
+      state.insightCursor.away = parseInt(cell.dataset.away);
+      renderInsightGrid(game);
+    });
+  });
+}
+
+function moveInsightCursor(dh, da) {
+  const home = Math.max(0, Math.min(GRID_MAX, state.insightCursor.home + dh));
+  const away = Math.max(0, Math.min(GRID_MAX, state.insightCursor.away + da));
+  if (home === state.insightCursor.home && away === state.insightCursor.away) return;
+  state.insightCursor = { home, away };
+  if (dh > 0 && home === state.insightOffset.home + 3 && home < GRID_MAX) state.insightOffset.home++;
+  else if (dh < 0 && home === state.insightOffset.home && state.insightOffset.home > 0) state.insightOffset.home--;
+  if (da > 0 && away === state.insightOffset.away + 3 && away < GRID_MAX) state.insightOffset.away++;
+  else if (da < 0 && away === state.insightOffset.away && state.insightOffset.away > 0) state.insightOffset.away--;
+  if (home < state.insightOffset.home) state.insightOffset.home = home;
+  if (home > state.insightOffset.home + 3) state.insightOffset.home = home - 3;
+  if (away < state.insightOffset.away) state.insightOffset.away = away;
+  if (away > state.insightOffset.away + 3) state.insightOffset.away = away - 3;
+  const game = state.games.find(g => g.id === state.insightGameId);
+  if (game) renderInsightGrid(game);
+}
+
+document.getElementById('games-table').addEventListener('click', e => {
+  const btn = e.target.closest('.best-bet-btn');
+  if (btn) {
+    e.stopPropagation();
+    const game = state.games.find(g => g.id === parseInt(btn.dataset.gameId));
+    if (game) openInsightModal(game);
+  }
+});
+
+document.getElementById('btn-insight-close').addEventListener('click', () =>
+  document.getElementById('modal-insight').classList.add('hidden'));
+document.getElementById('modal-insight').addEventListener('click', e => {
+  if (e.target.id === 'modal-insight') document.getElementById('modal-insight').classList.add('hidden');
+});
+
 function renderGames() {
   const games = filteredGames();
   document.getElementById('games-count').textContent = `${games.length} games`;
   const th = document.getElementById('th-date');
-  const abbr = tzAbbr(state.settings.timezone);
+  const tzs = state.settings.timezones?.length ? state.settings.timezones : [state.settings.timezone || 'Europe/Berlin'];
+  const abbr = tzAbbr(tzs[0]);
   const sortIndicator = state.sortField === 'date_utc' ? (state.sortDir === 1 ? ' ↑' : ' ↓') : '';
   th.textContent = `Time${abbr ? ' (' + abbr + ')' : ''}${sortIndicator}`;
   const tbody = document.getElementById('games-tbody');
@@ -480,7 +764,12 @@ function renderGames() {
       ? `<span class="score">${g.home_score} – ${g.away_score}</span>`
       : '<span style="color:var(--muted)">—</span>';
     const oddsCount = g.odds?.length || 0;
-    const timeStr = formatTime(g.date_utc, g.time_utc, state.settings.timezone);
+    const primaryTime = formatTime(g.date_utc, g.time_utc, tzs[0]);
+    const extraTimes = tzs.slice(1).map(tz => {
+      const t = formatTime(g.date_utc, g.time_utc, tz, true);
+      return t ? `<br><span style="color:var(--muted);font-size:11px;">${t} ${tzAbbr(tz)}</span>` : '';
+    }).join('');
+    const timeStr = primaryTime ? `${primaryTime}${extraTimes}` : null;
     tr.innerHTML = `
       <td class="col-time">${timeStr || '<span style="color:var(--muted)">—</span>'}</td>
       <td class="col-match"><div class="match-teams">${g.home} <span class="vs">vs</span> ${g.away}</div></td>
@@ -488,7 +777,7 @@ function renderGames() {
       <td class="col-group">${g.grp ? `<span class="badge badge-group">${g.grp}</span>` : '—'}</td>
       <td class="col-score">${score} ${g.played ? '<span class="played-dot" title="Played"></span>' : ''}</td>
       <td class="col-odds"><span class="odds-count">${oddsCount > 0 ? `${oddsCount} odds` : '<span style="color:var(--muted)">none</span>'}</span></td>
-      <td class="col-action"><button class="btn btn-sm btn-ghost">Select ›</button></td>
+      <td class="col-bestbet">${bestBetCell(g)}</td>
     `;
     tr.addEventListener('click', () => { state.keyboardIdx = idx; selectGame(g.id); });
     tbody.appendChild(tr);
@@ -520,17 +809,21 @@ function selectGame(id) {
 
 function renderPanelOdds(game) {
   const grid = document.getElementById('panel-odds-grid');
+  const paramsEl = document.getElementById('panel-model-params');
   if (!game.odds || game.odds.length === 0) {
     grid.innerHTML = '<div style="color:var(--muted);font-size:13px;">No odds entered yet. Press <kbd>A</kbd> or click "+ Add Odd".</div>';
+    paramsEl.textContent = '';
     return;
   }
+  const { C, p, q } = gameModelParams(game);
+  paramsEl.innerHTML = `Model fit: C = ${C.toFixed(4)} &nbsp; p = ${p.toFixed(3)} &nbsp; q = ${q.toFixed(3)}`;
   grid.innerHTML = '';
   game.odds.forEach(o => {
     const card = document.createElement('div');
     card.className = 'odd-card';
     card.innerHTML = `
       <div class="odd-score">${o.home_goals} – ${o.away_goals}</div>
-      <div class="odd-value">${o.odd_value.toFixed(2)}</div>
+      <div class="odd-value">${formatOddDisplay(o.odd_value)}</div>
       <button class="odd-delete" data-id="${o.id}" title="Delete">✕</button>
     `;
     card.querySelector('.odd-delete').addEventListener('click', async (e) => {
@@ -559,41 +852,270 @@ document.getElementById('btn-close-panel').addEventListener('click', () => {
 });
 
 // ── add odd modal ──────────────────────────────────────────────────────────
-let editingOdd = null;
+function gcd(a, b) { return b === 0 ? a : gcd(b, a % b); }
+function decimalToFractional(d) {
+  const num = Math.round((d - 1) * 100);
+  const den = 100;
+  const g = gcd(Math.abs(num), den);
+  return [num / g, den / g];
+}
+function fractionalToDecimal(num, den) { return 1 + num / den; }
 
-function openOddModal(prefill = null) {
-  if (!state.selectedGameId) { toast('Select a game first', 'error'); return; }
-  editingOdd = prefill;
-  const game = state.games.find(g => g.id === state.selectedGameId);
-  document.getElementById('modal-odd-title').textContent =
-    prefill ? `Update Odd · ${game.home} vs ${game.away}` : `Add Odd · ${game.home} vs ${game.away}`;
-  document.getElementById('input-home-goals').value = prefill?.home_goals ?? 1;
-  document.getElementById('input-away-goals').value = prefill?.away_goals ?? 0;
-  document.getElementById('input-odd-value').value = prefill?.odd_value?.toFixed(2) ?? '2.50';
-  document.getElementById('modal-odd').classList.remove('hidden');
-  document.getElementById('input-home-goals').focus();
+function formatOddDisplay(decVal) {
+  if (state.oddFormat === 'fractional') {
+    const [n, d] = decimalToFractional(decVal);
+    return `${n}/${d}`;
+  }
+  return decVal.toFixed(2);
 }
 
-async function saveOdd() {
+function applyOddFormatToggle() {
+  const isDecimal = state.oddFormat === 'decimal';
+  document.getElementById('toggle-decimal').classList.toggle('active', isDecimal);
+  document.getElementById('toggle-fractional').classList.toggle('active', !isDecimal);
+  document.getElementById('input-decimal-row').style.display = isDecimal ? '' : 'none';
+  document.getElementById('input-fractional-row').style.display = isDecimal ? 'none' : 'flex';
+}
+
+function refreshOddDisplays() {
+  applyOddFormatToggle();
+  renderOddGrid();
+  const game = state.games.find(g => g.id === state.selectedGameId);
+  if (game) renderPanelOdds(game);
+  renderGames();
+}
+
+document.getElementById('toggle-decimal').addEventListener('click', () => {
+  if (state.oddFormat === 'fractional') {
+    const num = parseInt(document.getElementById('input-odd-num').value) || 0;
+    const den = parseInt(document.getElementById('input-odd-den').value) || 1;
+    document.getElementById('input-odd-value').value = fractionalToDecimal(num, den).toFixed(2);
+  }
+  state.oddFormat = 'decimal';
+  refreshOddDisplays();
+});
+
+document.getElementById('toggle-fractional').addEventListener('click', () => {
+  if (state.oddFormat === 'decimal') {
+    const d = parseFloat(document.getElementById('input-odd-value').value) || 2.5;
+    const [num, den] = decimalToFractional(d);
+    document.getElementById('input-odd-num').value = num;
+    document.getElementById('input-odd-den').value = den;
+  }
+  state.oddFormat = 'fractional';
+  refreshOddDisplays();
+});
+
+const MODEL_MARGIN = 0.1;
+
+function fitModelParams(greenCells) {
+  if (greenCells.length === 0) return { p: 0.3, q: 0.3 };
+  let bestP = 0.3, bestQ = 0.3, bestLoss = Infinity;
+  for (let pi = 1; pi < 100; pi++) {
+    const p = pi / 100;
+    const logP = Math.log(p);
+    for (let qi = 1; qi < 100; qi++) {
+      const q = qi / 100;
+      const logC = Math.log((1 + MODEL_MARGIN) * (1 - p) * (1 - q));
+      const logQ = Math.log(q);
+      let loss = 0;
+      for (const cell of greenCells) {
+        const diff = logC + cell.x * logP + cell.y * logQ + Math.log(cell.odd);
+        loss += diff * diff;
+      }
+      if (loss < bestLoss) { bestLoss = loss; bestP = p; bestQ = q; }
+    }
+  }
+  return { p: bestP, q: bestQ };
+}
+
+function formatImpliedOdd(decVal) {
+  if (!isFinite(decVal) || decVal > 9999) return '—';
+  if (state.oddFormat === 'fractional') {
+    const [n, d] = decimalToFractional(Math.min(decVal, 9999));
+    return `${n}/${d}`;
+  }
+  return decVal >= 100 ? decVal.toFixed(0) : decVal.toFixed(1);
+}
+
+function renderOddGrid() {
+  const game = state.games.find(g => g.id === state.selectedGameId);
+  const oddsMap = {};
+  (game?.odds || []).forEach(o => { oddsMap[`${o.home_goals}-${o.away_goals}`] = o; });
+
+  const greenCells = (game?.odds || []).map(o => ({ x: o.home_goals, y: o.away_goals, odd: o.odd_value }));
+  const { p, q } = fitModelParams(greenCells);
+  const C = (1 + MODEL_MARGIN) * (1 - p) * (1 - q);
+
+  let html = '<div class="odd-grid-table">';
+  html += '<div></div>';
+  for (let c = 0; c < 4; c++) html += `<div class="odd-grid-collabel">${state.gridOffset.home + c}</div>`;
+  for (let r = 0; r < 4; r++) {
+    const a = state.gridOffset.away + r;
+    html += `<div class="odd-grid-rowlabel">${a}</div>`;
+    for (let c = 0; c < 4; c++) {
+      const h = state.gridOffset.home + c;
+      const odd = oddsMap[`${h}-${a}`];
+      const sel = state.gridCursor.home === h && state.gridCursor.away === a;
+      let cls = 'odd-grid-cell';
+      if (odd) cls += ' has-odd';
+      if (sel) cls += ' selected';
+      if (odd) {
+        html += `<div class="${cls}" data-home="${h}" data-away="${a}">
+          <span class="cell-score">${h}–${a}</span>
+          <span class="cell-value">${formatOddDisplay(odd.odd_value)}</span>
+        </div>`;
+      } else {
+        const implied = 1 / (C * Math.pow(p, h) * Math.pow(q, a));
+        html += `<div class="${cls}" data-home="${h}" data-away="${a}">
+          <span class="cell-score">${h}–${a}</span>
+          <span class="cell-implied">${formatImpliedOdd(implied)}</span>
+        </div>`;
+      }
+    }
+  }
+  html += '</div>';
+  document.getElementById('odd-grid').innerHTML = html;
+
+  document.getElementById('odd-grid').querySelectorAll('.odd-grid-cell').forEach(cell => {
+    cell.addEventListener('click', () => {
+      state.gridCursor.home = parseInt(cell.dataset.home);
+      state.gridCursor.away = parseInt(cell.dataset.away);
+      renderOddGrid();
+      switchToInputFocus();
+    });
+  });
+}
+
+function prefillInputPanel() {
+  const game = state.games.find(g => g.id === state.selectedGameId);
+  const existing = (game?.odds || []).find(o => o.home_goals === state.gridCursor.home && o.away_goals === state.gridCursor.away);
+  document.getElementById('selected-cell-label').textContent = `${state.gridCursor.home} – ${state.gridCursor.away}`;
+  document.getElementById('btn-delete-odd').classList.toggle('hidden', !existing);
+  const decVal = existing?.odd_value ?? null;
+  if (state.oddFormat === 'decimal') {
+    document.getElementById('input-odd-value').value = decVal !== null ? decVal.toFixed(2) : '';
+  } else {
+    if (decVal !== null) {
+      const [n, d] = decimalToFractional(decVal);
+      document.getElementById('input-odd-num').value = n;
+      document.getElementById('input-odd-den').value = d;
+    } else {
+      document.getElementById('input-odd-num').value = '';
+      document.getElementById('input-odd-den').value = '1';
+    }
+  }
+}
+
+function updateGridFocusUI() {
+  const isGrid = state.gridFocus === 'grid';
+  document.getElementById('odd-input-panel').style.opacity = isGrid ? '0.4' : '1';
+  document.getElementById('odd-input-panel').style.pointerEvents = isGrid ? 'none' : '';
+  document.getElementById('odd-grid-wrap').style.opacity = isGrid ? '1' : '0.55';
+  document.getElementById('grid-hint').textContent = isGrid
+    ? '↑↓←→ navigate · Enter: edit · Esc: close'
+    : 'Enter: save · Esc: back to grid';
+}
+
+function switchToInputFocus() {
+  state.gridFocus = 'input';
+  prefillInputPanel();
+  updateGridFocusUI();
+  const first = state.oddFormat === 'decimal'
+    ? document.getElementById('input-odd-value')
+    : document.getElementById('input-odd-num');
+  first.focus();
+  first.select();
+}
+
+function switchToGridFocus() {
+  state.gridFocus = 'grid';
+  updateGridFocusUI();
+  if (document.activeElement) document.activeElement.blur();
+}
+
+const GRID_MAX = 20;
+function moveGridCursor(dh, da) {
+  const home = Math.max(0, Math.min(GRID_MAX, state.gridCursor.home + dh));
+  const away = Math.max(0, Math.min(GRID_MAX, state.gridCursor.away + da));
+  if (home === state.gridCursor.home && away === state.gridCursor.away) return;
+  state.gridCursor = { home, away };
+  // Shift viewport when cursor ENTERS the edge column/row (fires before cursor is visually at the edge)
+  if (dh > 0 && home === state.gridOffset.home + 3 && home < GRID_MAX) state.gridOffset.home++;
+  else if (dh < 0 && home === state.gridOffset.home && state.gridOffset.home > 0) state.gridOffset.home--;
+  if (da > 0 && away === state.gridOffset.away + 3 && away < GRID_MAX) state.gridOffset.away++;
+  else if (da < 0 && away === state.gridOffset.away && state.gridOffset.away > 0) state.gridOffset.away--;
+  // Fallback: keep cursor inside viewport for any edge case
+  if (home < state.gridOffset.home) state.gridOffset.home = home;
+  if (home > state.gridOffset.home + 3) state.gridOffset.home = home - 3;
+  if (away < state.gridOffset.away) state.gridOffset.away = away;
+  if (away > state.gridOffset.away + 3) state.gridOffset.away = away - 3;
+  renderOddGrid();
+}
+
+async function saveOddInGrid() {
   const gameId = state.selectedGameId;
   if (!gameId) return;
-  const homeGoals = parseInt(document.getElementById('input-home-goals').value);
-  const awayGoals = parseInt(document.getElementById('input-away-goals').value);
-  const oddValue = parseFloat(document.getElementById('input-odd-value').value);
-  if (isNaN(homeGoals) || isNaN(awayGoals) || isNaN(oddValue) || oddValue <= 1) {
-    toast('Invalid input. Odd must be > 1.0', 'error'); return;
+  let oddValue;
+  if (state.oddFormat === 'fractional') {
+    const num = parseInt(document.getElementById('input-odd-num').value);
+    const den = parseInt(document.getElementById('input-odd-den').value);
+    if (isNaN(num) || isNaN(den) || num < 0 || den <= 0) {
+      toast('Profit ≥ 0 and stake > 0 required', 'error'); return;
+    }
+    oddValue = fractionalToDecimal(num, den);
+  } else {
+    oddValue = parseFloat(document.getElementById('input-odd-value').value);
   }
+  if (isNaN(oddValue) || oddValue < 1) { toast('Odd must be ≥ 1.0', 'error'); return; }
   try {
-    await PUT(`/api/games/${gameId}/odds`, { home_goals: homeGoals, away_goals: awayGoals, odd_value: oddValue });
-    document.getElementById('modal-odd').classList.add('hidden');
+    await PUT(`/api/games/${gameId}/odds`, { home_goals: state.gridCursor.home, away_goals: state.gridCursor.away, odd_value: oddValue });
     await refreshGame(gameId);
+    switchToGridFocus();
+    renderOddGrid();
     toast('Odd saved');
   } catch (e) { toast(`Error: ${e.message}`, 'error'); }
 }
 
+function closeOddModal() {
+  document.getElementById('modal-odd').classList.add('hidden');
+  state.gridFocus = 'grid';
+}
+
+function openOddModal(prefill = null) {
+  if (!state.selectedGameId) { toast('Select a game first', 'error'); return; }
+  const game = state.games.find(g => g.id === state.selectedGameId);
+  document.getElementById('modal-odd-title').textContent = `Add / Edit Odds · ${game.home} vs ${game.away}`;
+  document.getElementById('home-team-abbr').textContent = `(${game.home.slice(0, 3).toUpperCase()})`;
+  document.getElementById('away-team-abbr').textContent = `(${game.away.slice(0, 3).toUpperCase()})`;
+  if (prefill) {
+    state.gridCursor = { home: prefill.home_goals, away: prefill.away_goals };
+    state.gridOffset = { home: Math.max(0, prefill.home_goals - 1), away: Math.max(0, prefill.away_goals - 1) };
+  } else {
+    state.gridCursor = { home: 1, away: 0 };
+    state.gridOffset = { home: 0, away: 0 };
+  }
+  state.gridFocus = 'grid';
+  applyOddFormatToggle();
+  prefillInputPanel();
+  renderOddGrid();
+  updateGridFocusUI();
+  document.getElementById('modal-odd').classList.remove('hidden');
+}
+
 document.getElementById('btn-add-odd').addEventListener('click', () => openOddModal());
-document.getElementById('btn-modal-cancel').addEventListener('click', () => document.getElementById('modal-odd').classList.add('hidden'));
-document.getElementById('btn-modal-save').addEventListener('click', saveOdd);
+document.getElementById('btn-modal-close').addEventListener('click', saveOddInGrid);
+document.getElementById('btn-modal-close-x').addEventListener('click', closeOddModal);
+document.getElementById('btn-delete-odd').addEventListener('click', async () => {
+  const game = state.games.find(g => g.id === state.selectedGameId);
+  const existing = (game?.odds || []).find(o => o.home_goals === state.gridCursor.home && o.away_goals === state.gridCursor.away);
+  if (!existing) return;
+  await DELETE(`/api/odds/${existing.id}`);
+  await refreshGame(state.selectedGameId);
+  switchToGridFocus();
+  renderOddGrid();
+  toast('Odd deleted');
+});
 
 // ── set result modal ────────────────────────────────────────────────────────
 function openResultModal() {
@@ -621,16 +1143,55 @@ async function saveResult() {
   } catch (e) { toast(`Error: ${e.message}`, 'error'); }
 }
 
-document.getElementById('btn-set-result').addEventListener('click', openResultModal);
 document.getElementById('btn-res-cancel').addEventListener('click', () => document.getElementById('modal-result').classList.add('hidden'));
 document.getElementById('btn-res-save').addEventListener('click', saveResult);
 
 // ── keyboard shortcuts ──────────────────────────────────────────────────────
 document.addEventListener('keydown', (e) => {
+  const modalInsightOpen = !document.getElementById('modal-insight').classList.contains('hidden');
+  if (modalInsightOpen) {
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); moveInsightCursor(-1, 0); return; }
+    if (e.key === 'ArrowRight') { e.preventDefault(); moveInsightCursor(1, 0); return; }
+    if (e.key === 'ArrowUp')    { e.preventDefault(); moveInsightCursor(0, -1); return; }
+    if (e.key === 'ArrowDown')  { e.preventDefault(); moveInsightCursor(0, 1); return; }
+    if (e.key === 'Escape')     { e.preventDefault(); document.getElementById('modal-insight').classList.add('hidden'); return; }
+    return;
+  }
+  const modalOddOpen = !document.getElementById('modal-odd').classList.contains('hidden');
+  if (modalOddOpen) {
+    if (state.gridFocus === 'grid') {
+      if (e.key === 'ArrowLeft')  { e.preventDefault(); moveGridCursor(-1, 0); return; }
+      if (e.key === 'ArrowRight') { e.preventDefault(); moveGridCursor(1, 0); return; }
+      if (e.key === 'ArrowUp')    { e.preventDefault(); moveGridCursor(0, -1); return; }
+      if (e.key === 'ArrowDown')  { e.preventDefault(); moveGridCursor(0, 1); return; }
+      if (e.key === 'Enter')      { e.preventDefault(); switchToInputFocus(); return; }
+      if (e.key === 'Escape')     { e.preventDefault(); closeOddModal(); return; }
+      if (/^[0-9]$/.test(e.key)) {
+        e.preventDefault();
+        switchToInputFocus();
+        const first = state.oddFormat === 'decimal'
+          ? document.getElementById('input-odd-value')
+          : document.getElementById('input-odd-num');
+        first.value = e.key;
+        first.setSelectionRange(1, 1);
+        return;
+      }
+      if (e.key === '/' && state.oddFormat === 'fractional') {
+        e.preventDefault();
+        switchToInputFocus();
+        const den = document.getElementById('input-odd-den');
+        den.focus();
+        den.select();
+        return;
+      }
+    }
+    return;
+  }
+
   const tag = document.activeElement.tagName;
   if (tag === 'INPUT' || tag === 'TEXTAREA') return;
 
-  if (e.key === 'a' || e.key === 'A') { openOddModal(); return; }
+  if (e.key === 'a' || e.key === 'A') { e.preventDefault(); openOddModal(); return; }
 
   if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
     e.preventDefault();
@@ -652,14 +1213,23 @@ document.addEventListener('keydown', (e) => {
   }
 
   if (e.key === 'Escape') {
-    document.getElementById('modal-odd').classList.add('hidden');
     document.getElementById('modal-result').classList.add('hidden');
   }
 });
 
 document.getElementById('modal-odd').addEventListener('keydown', e => {
-  if (e.key === 'Enter') { e.preventDefault(); saveOdd(); }
-  if (e.key === 'Escape') document.getElementById('modal-odd').classList.add('hidden');
+  if (state.gridFocus === 'input') {
+    if (e.key === 'Enter')  { e.preventDefault(); saveOddInGrid(); return; }
+    if (e.key === 'Escape') { e.preventDefault(); switchToGridFocus(); return; }
+  }
+  if (e.key === 'Tab') {
+    const modal = document.getElementById('modal-odd');
+    const focusable = [...modal.querySelectorAll('input, button, select, textarea, [tabindex]:not([tabindex="-1"])')].filter(el => !el.disabled && el.style.display !== 'none' && !el.closest('.hidden'));
+    if (!focusable.length) { e.preventDefault(); return; }
+    const first = focusable[0], last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
 });
 document.getElementById('modal-result').addEventListener('keydown', e => {
   if (e.key === 'Enter') { e.preventDefault(); saveResult(); }
@@ -667,10 +1237,11 @@ document.getElementById('modal-result').addEventListener('keydown', e => {
 });
 
 // click outside modal to close
-['modal-odd', 'modal-result'].forEach(id => {
-  document.getElementById(id).addEventListener('click', e => {
-    if (e.target.id === id) document.getElementById(id).classList.add('hidden');
-  });
+document.getElementById('modal-odd').addEventListener('click', e => {
+  if (e.target.id === 'modal-odd') closeOddModal();
+});
+document.getElementById('modal-result').addEventListener('click', e => {
+  if (e.target.id === 'modal-result') document.getElementById('modal-result').classList.add('hidden');
 });
 
 // ── update results from Wikipedia ──────────────────────────────────────────
@@ -745,19 +1316,93 @@ function renderBestBets(bets) {
 // ── settings ───────────────────────────────────────────────────────────────
 const SETTING_LABELS = {
   exact_score_points: 'Exact Score Points',
-  correct_goals_home_points: 'Correct Home Goals',
-  correct_goals_away_points: 'Correct Away Goals',
+  exact_tie_points: 'Exact Tie Points',
   correct_goal_diff_points: 'Correct Goal Difference',
+  correct_tie_points: 'Correct Tie Result',
   correct_result_points: 'Correct Result (W/D/L)',
-  budget: 'Budget',
-  currency: 'Currency',
 };
+
+const TZ_KEYS = ['timezone', 'timezone_2', 'timezone_3', 'timezone_4', 'timezone_5', 'timezone_6'];
+
+const TIMEZONES = [
+  { value: 'Europe/Berlin',        label: 'CEST/CET — Central Europe' },
+  { value: 'Europe/London',        label: 'BST/GMT — London/UK' },
+  { value: 'Europe/Lisbon',        label: 'WEST/WET — Lisbon/Portugal' },
+  { value: 'Europe/Madrid',        label: 'CEST/CET — Madrid/Spain' },
+  { value: 'Europe/Rome',          label: 'CEST/CET — Italy' },
+  { value: 'Europe/Amsterdam',     label: 'CEST/CET — Netherlands' },
+  { value: 'Europe/Zurich',        label: 'CEST/CET — Switzerland' },
+  { value: 'Europe/Warsaw',        label: 'CEST/CET — Poland' },
+  { value: 'Europe/Istanbul',      label: 'TRT — Turkey' },
+  { value: 'Europe/Moscow',        label: 'MSK — Moscow' },
+  { value: 'UTC',                  label: 'UTC' },
+  { value: 'America/New_York',     label: 'ET — US East' },
+  { value: 'America/Chicago',      label: 'CT — US Central' },
+  { value: 'America/Denver',       label: 'MT — US Mountain' },
+  { value: 'America/Los_Angeles',  label: 'PT — US West' },
+  { value: 'America/Toronto',      label: 'ET — Toronto/Canada East' },
+  { value: 'America/Vancouver',    label: 'PT — Vancouver/Canada West' },
+  { value: 'America/Mexico_City',  label: 'CT — Mexico City' },
+  { value: 'America/Sao_Paulo',    label: 'BRT — Brazil' },
+  { value: 'America/Buenos_Aires', label: 'ART — Buenos Aires' },
+  { value: 'Africa/Cairo',         label: 'EET — Cairo' },
+  { value: 'Africa/Lagos',         label: 'WAT — Lagos/West Africa' },
+  { value: 'Africa/Johannesburg',  label: 'SAST — South Africa' },
+  { value: 'Asia/Dubai',           label: 'GST — Dubai/UAE' },
+  { value: 'Asia/Kolkata',         label: 'IST — India' },
+  { value: 'Asia/Bangkok',         label: 'ICT — Bangkok/Thailand' },
+  { value: 'Asia/Singapore',       label: 'SGT — Singapore' },
+  { value: 'Asia/Seoul',           label: 'KST — Seoul/South Korea' },
+  { value: 'Asia/Tokyo',           label: 'JST — Japan' },
+  { value: 'Asia/Shanghai',        label: 'CST — China' },
+  { value: 'Australia/Sydney',     label: 'AEST — Sydney' },
+  { value: 'Pacific/Auckland',     label: 'NZST — New Zealand' },
+];
+
+function _getCurrentTzList() {
+  const vals = [];
+  for (let i = 0; document.getElementById(`tz-select-${i}`); i++)
+    vals.push(document.getElementById(`tz-select-${i}`).value);
+  return vals;
+}
+
+function _rebuildTzUI(tzList) {
+  const container = document.getElementById('timezone-settings-container');
+  if (!container) return;
+  const optionsHtml = TIMEZONES.map(tz => `<option value="${tz.value}">${tz.label}</option>`).join('');
+  let html = '';
+  tzList.forEach((val, i) => {
+    html += `<div style="display:flex;align-items:flex-end;gap:8px;margin-bottom:8px;">
+      <div class="form-group" style="flex:1;margin:0;">
+        <label>${i === 0 ? 'Primary timezone' : 'Timezone ' + (i + 1)}</label>
+        <select id="tz-select-${i}"><option value="">— None —</option>${optionsHtml}</select>
+      </div>
+      ${i > 0 ? `<button type="button" class="btn btn-ghost btn-sm" id="tz-rm-${i}" style="margin-bottom:1px;">−</button>` : ''}
+    </div>`;
+  });
+  if (tzList.length < 6)
+    html += `<button type="button" class="btn btn-ghost btn-sm" id="tz-add-btn">+ Add timezone</button>`;
+  container.innerHTML = html;
+  tzList.forEach((val, i) => { const el = document.getElementById(`tz-select-${i}`); if (el && val) el.value = val; });
+  const addBtn = document.getElementById('tz-add-btn');
+  if (addBtn) addBtn.addEventListener('click', () => _rebuildTzUI([..._getCurrentTzList(), '']));
+  tzList.forEach((_, i) => {
+    const rm = document.getElementById(`tz-rm-${i}`);
+    if (rm) rm.addEventListener('click', () => { const v = _getCurrentTzList(); v.splice(i, 1); _rebuildTzUI(v); });
+  });
+}
+
+function renderTimezoneSettings() {
+  const existing = TZ_KEYS.map(k => state.settings[k] || '').filter((v, i) => i === 0 || v !== '');
+  if (!existing[0]) existing[0] = 'Europe/Berlin';
+  _rebuildTzUI(existing);
+}
 
 async function loadSettings() {
   state.settings = await GET('/api/settings');
-  // Set timezone select
-  const tzEl = document.getElementById('setting-timezone');
-  if (tzEl && state.settings.timezone) tzEl.value = state.settings.timezone;
+  state.settings.timezones = TZ_KEYS.map(k => state.settings[k]).filter(Boolean);
+  if (!state.settings.timezones.length) state.settings.timezones = ['Europe/Berlin'];
+  renderTimezoneSettings();
   // Render scoring form
   const form = document.getElementById('settings-form');
   form.innerHTML = '';
@@ -774,8 +1419,8 @@ async function loadSettings() {
 
 document.getElementById('btn-save-settings').addEventListener('click', async () => {
   const updates = {};
-  const tzEl = document.getElementById('setting-timezone');
-  if (tzEl) updates.timezone = tzEl.value;
+  const tzVals = _getCurrentTzList();
+  TZ_KEYS.forEach((key, i) => { updates[key] = tzVals[i] || ''; });
   Object.keys(SETTING_LABELS).forEach(key => {
     const el = document.getElementById(`setting-${key}`);
     if (!el) return;
@@ -785,6 +1430,8 @@ document.getElementById('btn-save-settings').addEventListener('click', async () 
   try {
     await PATCH('/api/settings', updates);
     Object.assign(state.settings, updates);
+    state.settings.timezones = TZ_KEYS.map(k => state.settings[k]).filter(Boolean);
+    if (!state.settings.timezones.length) state.settings.timezones = ['Europe/Berlin'];
     renderGames();
     toast('Settings saved');
   } catch (e) { toast(`Error: ${e.message}`, 'error'); }
@@ -815,6 +1462,7 @@ document.getElementById('th-date').addEventListener('click', () => {
 });
 
 // ── init ───────────────────────────────────────────────────────────────────
+applyOddFormatToggle();
 loadSettings().then(() => loadGames());
 </script>
 </body>

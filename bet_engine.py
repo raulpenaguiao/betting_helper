@@ -28,22 +28,24 @@ def _implied_prob(odd: float) -> float:
 
 
 def _compute_points(pred_h, pred_a, act_h, act_a, cfg):
-    if pred_h == act_h and pred_a == act_a:
-        return cfg["exact_score_points"]
-
-    pts = 0
-    if pred_h == act_h:
-        pts += cfg["correct_goals_home_points"]
-    if pred_a == act_a:
-        pts += cfg["correct_goals_away_points"]
-    # goal difference
-    if (pred_h - pred_a) == (act_h - act_a):
-        pts += cfg["correct_goal_diff_points"]
-    # result (win/draw/loss)
     def sign(x): return (x > 0) - (x < 0)
+    pred_draw = pred_h == pred_a
+    act_draw = act_h == act_a
+
+    if pred_h == act_h and pred_a == act_a:
+        if pred_draw:
+            return cfg.get("exact_tie_points", cfg.get("exact_score_points", 6))
+        return cfg.get("exact_score_points", 6)
+
+    if (pred_h - pred_a) == (act_h - act_a):
+        if pred_draw and act_draw:
+            return cfg.get("correct_tie_points", cfg.get("correct_goal_diff_points", 1))
+        return cfg.get("correct_goal_diff_points", 1)
+
     if sign(pred_h - pred_a) == sign(act_h - act_a):
-        pts += cfg["correct_result_points"]
-    return pts
+        return cfg.get("correct_result_points", 1)
+
+    return 0
 
 
 def compute_best_bets(top_n: int = 20):
