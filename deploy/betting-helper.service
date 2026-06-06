@@ -3,7 +3,7 @@ Description=Betting Helper FastAPI App
 After=network.target
 
 [Service]
-User=www-data
+User=root
 WorkingDirectory=/opt/betting_helper
 ExecStart=/opt/betting_helper/venv/bin/uvicorn app:app --host 127.0.0.1 --port 8765
 Restart=always
