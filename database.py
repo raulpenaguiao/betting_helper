@@ -77,11 +77,11 @@ def init_db():
                 (f["match_number"], f["stage"], f.get("group"), f["home"], f["away"], f.get("date_utc")),
             )
     else:
-        # Backfill dates for existing rows that were seeded before this column existed
+        # Sync teams and dates from fixture data (keeps results/scores intact)
         for f in ALL_FIXTURES:
             conn.execute(
-                "UPDATE games SET date_utc=? WHERE match_number=? AND date_utc IS NULL",
-                (f.get("date_utc"), f["match_number"]),
+                "UPDATE games SET home=?, away=?, date_utc=? WHERE match_number=?",
+                (f["home"], f["away"], f.get("date_utc"), f["match_number"]),
             )
 
     # Seed settings if empty

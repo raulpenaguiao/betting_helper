@@ -1,37 +1,100 @@
 """
-FIFA World Cup 2026 fixture data.
+FIFA World Cup 2026 fixture data — official group stage schedule.
+Source: Wikipedia / FIFA (June 2026).
 Groups A–L, 4 teams each (48 teams total).
-Group stage: C(4,2)=6 games per group → 72 games.
-Knockout: R32(16) + R16(8) + QF(4) + SF(2) + 3rd(1) + F(1) = 32 games.
 """
-from datetime import date, timedelta
 
-GROUPS = {
-    "A": ["Mexico", "USA", "Canada", "New Zealand"],
-    "B": ["Argentina", "Chile", "Peru", "Australia"],
-    "C": ["Brazil", "Colombia", "Paraguay", "Japan"],
-    "D": ["France", "Belgium", "Morocco", "Algeria"],
-    "E": ["England", "Netherlands", "Portugal", "Senegal"],
-    "F": ["Spain", "Germany", "Switzerland", "Cameroon"],
-    "G": ["Italy", "Croatia", "Ukraine", "Nigeria"],
-    "H": ["Uruguay", "Ecuador", "Bolivia", "South Korea"],
-    "I": ["Denmark", "Serbia", "Czech Republic", "Saudi Arabia"],
-    "J": ["Poland", "Austria", "Slovakia", "Iran"],
-    "K": ["Egypt", "Tunisia", "DR Congo", "Turkey"],
-    "L": ["Qatar", "Costa Rica", "Honduras", "Ivory Coast"],
-}
 
-# Hosts: USA, Canada, Mexico — all pre-qualified
-# Actual draw hasn't happened yet (as of May 2026 data isn't fully official);
-# these are placeholder teams for the structure.
-
-def _group_date(match_number):
-    """Distribute 72 group games across June 11-25 (~5 per day)."""
-    return (date(2026, 6, 11) + timedelta(days=(match_number - 1) // 5)).isoformat()
+GROUP_FIXTURES = [
+    # Group A: Mexico, South Africa, South Korea, Czech Republic
+    {"group": "A", "home": "Mexico",        "away": "South Africa",           "date_utc": "2026-06-11"},
+    {"group": "A", "home": "South Korea",   "away": "Czech Republic",         "date_utc": "2026-06-11"},
+    {"group": "A", "home": "Czech Republic","away": "South Africa",           "date_utc": "2026-06-18"},
+    {"group": "A", "home": "Mexico",        "away": "South Korea",            "date_utc": "2026-06-18"},
+    {"group": "A", "home": "Czech Republic","away": "Mexico",                 "date_utc": "2026-06-24"},
+    {"group": "A", "home": "South Africa",  "away": "South Korea",            "date_utc": "2026-06-24"},
+    # Group B: Canada, Bosnia and Herzegovina, Qatar, Switzerland
+    {"group": "B", "home": "Canada",        "away": "Bosnia and Herzegovina", "date_utc": "2026-06-12"},
+    {"group": "B", "home": "Qatar",         "away": "Switzerland",            "date_utc": "2026-06-13"},
+    {"group": "B", "home": "Switzerland",   "away": "Bosnia and Herzegovina", "date_utc": "2026-06-18"},
+    {"group": "B", "home": "Canada",        "away": "Qatar",                  "date_utc": "2026-06-18"},
+    {"group": "B", "home": "Switzerland",   "away": "Canada",                 "date_utc": "2026-06-24"},
+    {"group": "B", "home": "Bosnia and Herzegovina", "away": "Qatar",         "date_utc": "2026-06-24"},
+    # Group C: Brazil, Morocco, Haiti, Scotland
+    {"group": "C", "home": "Brazil",        "away": "Morocco",                "date_utc": "2026-06-13"},
+    {"group": "C", "home": "Haiti",         "away": "Scotland",               "date_utc": "2026-06-13"},
+    {"group": "C", "home": "Scotland",      "away": "Morocco",                "date_utc": "2026-06-19"},
+    {"group": "C", "home": "Brazil",        "away": "Haiti",                  "date_utc": "2026-06-19"},
+    {"group": "C", "home": "Scotland",      "away": "Brazil",                 "date_utc": "2026-06-24"},
+    {"group": "C", "home": "Morocco",       "away": "Haiti",                  "date_utc": "2026-06-24"},
+    # Group D: United States, Paraguay, Australia, Turkey
+    {"group": "D", "home": "United States", "away": "Paraguay",               "date_utc": "2026-06-12"},
+    {"group": "D", "home": "Australia",     "away": "Turkey",                 "date_utc": "2026-06-13"},
+    {"group": "D", "home": "United States", "away": "Australia",              "date_utc": "2026-06-19"},
+    {"group": "D", "home": "Turkey",        "away": "Paraguay",               "date_utc": "2026-06-19"},
+    {"group": "D", "home": "Turkey",        "away": "United States",          "date_utc": "2026-06-25"},
+    {"group": "D", "home": "Paraguay",      "away": "Australia",              "date_utc": "2026-06-25"},
+    # Group E: Germany, Curaçao, Ivory Coast, Ecuador
+    {"group": "E", "home": "Germany",       "away": "Curaçao",                "date_utc": "2026-06-14"},
+    {"group": "E", "home": "Ivory Coast",   "away": "Ecuador",                "date_utc": "2026-06-14"},
+    {"group": "E", "home": "Germany",       "away": "Ivory Coast",            "date_utc": "2026-06-20"},
+    {"group": "E", "home": "Ecuador",       "away": "Curaçao",                "date_utc": "2026-06-20"},
+    {"group": "E", "home": "Curaçao",       "away": "Ivory Coast",            "date_utc": "2026-06-25"},
+    {"group": "E", "home": "Ecuador",       "away": "Germany",                "date_utc": "2026-06-25"},
+    # Group F: Netherlands, Japan, Sweden, Tunisia
+    {"group": "F", "home": "Netherlands",   "away": "Japan",                  "date_utc": "2026-06-14"},
+    {"group": "F", "home": "Sweden",        "away": "Tunisia",                "date_utc": "2026-06-14"},
+    {"group": "F", "home": "Netherlands",   "away": "Sweden",                 "date_utc": "2026-06-20"},
+    {"group": "F", "home": "Tunisia",       "away": "Japan",                  "date_utc": "2026-06-20"},
+    {"group": "F", "home": "Japan",         "away": "Sweden",                 "date_utc": "2026-06-25"},
+    {"group": "F", "home": "Tunisia",       "away": "Netherlands",            "date_utc": "2026-06-25"},
+    # Group G: Iran, New Zealand, Belgium, Egypt
+    {"group": "G", "home": "Iran",          "away": "New Zealand",            "date_utc": "2026-06-15"},
+    {"group": "G", "home": "Belgium",       "away": "Egypt",                  "date_utc": "2026-06-15"},
+    {"group": "G", "home": "Belgium",       "away": "Iran",                   "date_utc": "2026-06-21"},
+    {"group": "G", "home": "New Zealand",   "away": "Egypt",                  "date_utc": "2026-06-21"},
+    {"group": "G", "home": "Egypt",         "away": "Iran",                   "date_utc": "2026-06-26"},
+    {"group": "G", "home": "New Zealand",   "away": "Belgium",                "date_utc": "2026-06-26"},
+    # Group H: Spain, Cape Verde, Saudi Arabia, Uruguay
+    {"group": "H", "home": "Spain",         "away": "Cape Verde",             "date_utc": "2026-06-15"},
+    {"group": "H", "home": "Saudi Arabia",  "away": "Uruguay",                "date_utc": "2026-06-15"},
+    {"group": "H", "home": "Spain",         "away": "Saudi Arabia",           "date_utc": "2026-06-21"},
+    {"group": "H", "home": "Uruguay",       "away": "Cape Verde",             "date_utc": "2026-06-21"},
+    {"group": "H", "home": "Cape Verde",    "away": "Saudi Arabia",           "date_utc": "2026-06-26"},
+    {"group": "H", "home": "Uruguay",       "away": "Spain",                  "date_utc": "2026-06-26"},
+    # Group I: France, Senegal, Iraq, Norway
+    {"group": "I", "home": "France",        "away": "Senegal",                "date_utc": "2026-06-16"},
+    {"group": "I", "home": "Iraq",          "away": "Norway",                 "date_utc": "2026-06-16"},
+    {"group": "I", "home": "France",        "away": "Iraq",                   "date_utc": "2026-06-22"},
+    {"group": "I", "home": "Norway",        "away": "Senegal",                "date_utc": "2026-06-22"},
+    {"group": "I", "home": "Norway",        "away": "France",                 "date_utc": "2026-06-26"},
+    {"group": "I", "home": "Senegal",       "away": "Iraq",                   "date_utc": "2026-06-26"},
+    # Group J: Argentina, Algeria, Austria, Jordan
+    {"group": "J", "home": "Argentina",     "away": "Algeria",                "date_utc": "2026-06-16"},
+    {"group": "J", "home": "Austria",       "away": "Jordan",                 "date_utc": "2026-06-16"},
+    {"group": "J", "home": "Argentina",     "away": "Austria",                "date_utc": "2026-06-22"},
+    {"group": "J", "home": "Jordan",        "away": "Algeria",                "date_utc": "2026-06-22"},
+    {"group": "J", "home": "Algeria",       "away": "Austria",                "date_utc": "2026-06-27"},
+    {"group": "J", "home": "Jordan",        "away": "Argentina",              "date_utc": "2026-06-27"},
+    # Group K: Portugal, DR Congo, Uzbekistan, Colombia
+    {"group": "K", "home": "Portugal",      "away": "DR Congo",               "date_utc": "2026-06-17"},
+    {"group": "K", "home": "Uzbekistan",    "away": "Colombia",               "date_utc": "2026-06-17"},
+    {"group": "K", "home": "Portugal",      "away": "Uzbekistan",             "date_utc": "2026-06-23"},
+    {"group": "K", "home": "Colombia",      "away": "DR Congo",               "date_utc": "2026-06-23"},
+    {"group": "K", "home": "Colombia",      "away": "Portugal",               "date_utc": "2026-06-27"},
+    {"group": "K", "home": "DR Congo",      "away": "Uzbekistan",             "date_utc": "2026-06-27"},
+    # Group L: England, Croatia, Ghana, Panama
+    {"group": "L", "home": "England",       "away": "Croatia",                "date_utc": "2026-06-17"},
+    {"group": "L", "home": "Ghana",         "away": "Panama",                 "date_utc": "2026-06-17"},
+    {"group": "L", "home": "England",       "away": "Ghana",                  "date_utc": "2026-06-23"},
+    {"group": "L", "home": "Panama",        "away": "Croatia",                "date_utc": "2026-06-23"},
+    {"group": "L", "home": "Panama",        "away": "England",                "date_utc": "2026-06-27"},
+    {"group": "L", "home": "Croatia",       "away": "Ghana",                  "date_utc": "2026-06-27"},
+]
 
 
 def _knockout_date(stage, slot):
-    """Return ISO date for a knockout game given its stage and 1-based slot within the stage."""
+    from datetime import date, timedelta
     if stage == "Round of 32":
         return (date(2026, 6, 28) + timedelta(days=(slot - 1) // 4)).isoformat()
     if stage == "Round of 16":
@@ -47,26 +110,20 @@ def _knockout_date(stage, slot):
 
 
 def generate_group_fixtures():
-    """Return list of group-stage fixture dicts."""
     fixtures = []
-    game_num = 1
-    for group, teams in GROUPS.items():
-        for i in range(len(teams)):
-            for j in range(i + 1, len(teams)):
-                fixtures.append({
-                    "stage": "Group",
-                    "group": group,
-                    "home": teams[i],
-                    "away": teams[j],
-                    "match_number": game_num,
-                    "date_utc": _group_date(game_num),
-                })
-                game_num += 1
+    for i, f in enumerate(GROUP_FIXTURES, start=1):
+        fixtures.append({
+            "stage": "Group",
+            "group": f["group"],
+            "home": f["home"],
+            "away": f["away"],
+            "match_number": i,
+            "date_utc": f["date_utc"],
+        })
     return fixtures
 
 
 def generate_knockout_fixtures():
-    """Return placeholder knockout fixtures (TBD teams)."""
     fixtures = []
     stages = [
         ("Round of 32", 16),

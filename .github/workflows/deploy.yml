@@ -1,0 +1,62 @@
+name: CI / Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  # ── 1. run tests ─────────────────────────────────────────────────────────────
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Run tests
+        run: pytest tests/ -v
+
+  # ── 2. deploy to VPS (only if tests pass) ────────────────────────────────────
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            set -e
+
+            cd /opt/betting_helper
+
+            # Pull latest code
+            git pull origin main
+
+            # Install/update Python dependencies
+            source venv/bin/activate
+            pip install -r requirements.txt --quiet
+
+            # Install systemd units if they were updated
+            sudo cp deploy/betting-helper.service        /etc/systemd/system/
+            sudo cp deploy/betting-helper-update.service /etc/systemd/system/
+            sudo cp deploy/betting-helper-update.timer   /etc/systemd/system/
+            sudo systemctl daemon-reload
+
+            # Restart app
+            sudo systemctl restart betting-helper
+
+            # Ensure hourly sync timer is running
+            sudo systemctl enable --now betting-helper-update.timer
+
+            echo "Deploy complete — $(date -u)"

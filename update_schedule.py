@@ -1,16 +1,18 @@
 """
-Fetch the real WC 2026 fixture schedule from Wikipedia and update the local DB.
+Fetch live WC 2026 fixtures and results from Wikipedia and sync to the local DB.
 
-Idempotency:
-  - Group stage: for each group, match Wikipedia fixtures to DB records by team-pair
-    (either order). On first run with placeholder teams, falls back to positional
-    mapping (Wikipedia chronological order → DB match_number order). Subsequent
-    runs find exact team-pair matches and overwrite with the same data.
-  - Knockout stage: matched purely by positional order within each stage, since
-    teams are TBD on Wikipedia too.
+Run manually:  python update_schedule.py
+Run via timer: see deploy/betting-helper-update.timer
 
-Run:
-    python update_schedule.py
+What it updates per game row:
+  - home / away team names  (fills TBD slots in knockout stage as teams qualify)
+  - date_utc / time_utc     (exact kick-off time once confirmed)
+  - home_score / away_score / played  (once the match is finished)
+
+Matching strategy:
+  Group stage:   team-pair match {home,away} == {wiki_home,wiki_away},
+                 with positional fallback for unmatched rows.
+  Knockout stage: positional within each stage (Wikipedia lists them in order).
 """
 
 import sys
@@ -29,18 +31,14 @@ KNOCKOUT_STAGE_ORDER = [
 
 def _match_fixtures_to_records(wiki_fixtures, db_records):
     """
-    Return list of (db_id, wiki_fixture) pairs.
-
-    Strategy: for each Wikipedia fixture (sorted chrono), try to find a DB record
-    whose {home, away} set matches the Wikipedia {home, away} set.  If no exact
-    match is found, take the next unmatched DB record in match_number order
-    (positional fallback for the first run when DB has placeholder teams).
+    Pair Wikipedia fixtures to DB records by team-pair, with positional fallback.
+    Returns list of (db_id, wiki_fixture).
     """
     wiki_sorted = sorted(
         wiki_fixtures,
         key=lambda f: (f["date_utc"] or "", f["time_utc"] or ""),
     )
-    db_remaining = list(db_records)  # already ordered by match_number
+    db_remaining = list(db_records)
     pairs = []
 
     for wf in wiki_sorted:
@@ -58,89 +56,100 @@ def _match_fixtures_to_records(wiki_fixtures, db_records):
     return pairs
 
 
-def update_group_stage():
-    conn = db.get_conn()
+def _apply_fixture(conn, db_id, wf):
+    """Write all scraped fields for one game into the DB."""
+    played = 1 if wf.get("played") else 0
+    conn.execute(
+        """UPDATE games
+           SET home=?, away=?, date_utc=?, time_utc=?,
+               home_score=COALESCE(?, home_score),
+               away_score=COALESCE(?, away_score),
+               played=MAX(played, ?)
+           WHERE id=?""",
+        (
+            wf["home"], wf["away"], wf.get("date_utc"), wf.get("time_utc"),
+            wf.get("home_score"), wf.get("away_score"),
+            played, db_id,
+        ),
+    )
+
+
+def update_group_stage(conn):
     print("Fetching group stage fixtures from Wikipedia…")
     data = fetch_all_group_fixtures()
 
-    if data["errors"]:
-        for e in data["errors"]:
-            print(f"  WARNING: {e}")
+    for e in data.get("errors", []):
+        print(f"  WARNING: {e}")
 
-    total_updated = 0
+    total = 0
     for letter, wiki_fixtures in data["groups"].items():
         if not wiki_fixtures:
             print(f"  Group {letter}: no fixtures found, skipping")
             continue
 
-        db_records = conn.execute(
-            "SELECT id, home, away FROM games WHERE grp=? AND stage='Group' ORDER BY match_number",
-            (letter,),
-        ).fetchall()
-        db_records = [dict(r) for r in db_records]
+        db_records = [
+            dict(r)
+            for r in conn.execute(
+                "SELECT id, home, away FROM games WHERE grp=? AND stage='Group' ORDER BY match_number",
+                (letter,),
+            ).fetchall()
+        ]
 
         pairs = _match_fixtures_to_records(wiki_fixtures, db_records)
-
         for db_id, wf in pairs:
-            conn.execute(
-                "UPDATE games SET home=?, away=?, date_utc=?, time_utc=? WHERE id=?",
-                (wf["home"], wf["away"], wf["date_utc"], wf["time_utc"], db_id),
-            )
-            total_updated += 1
+            _apply_fixture(conn, db_id, wf)
+            total += 1
 
-        print(f"  Group {letter}: {len(pairs)}/{len(db_records)} records updated")
+        print(f"  Group {letter}: {len(pairs)}/{len(db_records)} records synced")
 
-    conn.commit()
-    conn.close()
-    print(f"Group stage done — {total_updated} games updated.\n")
+    print(f"Group stage done — {total} games updated.\n")
 
 
-def update_knockout_stage():
+def update_knockout_stage(conn):
     print("Fetching knockout stage fixtures from Wikipedia…")
     data = fetch_knockout_fixtures()
     if data["error"]:
         print(f"  ERROR: {data['error']}")
         return
 
-    wiki_fixtures = data["fixtures"]
-    conn = db.get_conn()
+    wiki_fixtures = list(data["fixtures"])
 
-    # Group wiki fixtures by stage (in Wikipedia order)
-    wiki_by_stage = {}
-    for wf in wiki_fixtures:
-        # We don't scrape stage from the knockout page directly; infer from count
-        pass
-
-    # Simpler: just match positionally within each stage using DB order
     for stage in KNOCKOUT_STAGE_ORDER:
-        db_records = conn.execute(
-            "SELECT id, home, away FROM games WHERE stage=? ORDER BY match_number",
-            (stage,),
-        ).fetchall()
-        db_records = [dict(r) for r in db_records]
+        db_records = [
+            dict(r)
+            for r in conn.execute(
+                "SELECT id, home, away FROM games WHERE stage=? ORDER BY match_number",
+                (stage,),
+            ).fetchall()
+        ]
         if not db_records:
             continue
 
-        # Pull next len(db_records) fixtures from wiki_fixtures
+        # Wikipedia lists knockout games in stage order; consume positionally.
         stage_wiki = wiki_fixtures[: len(db_records)]
         wiki_fixtures = wiki_fixtures[len(db_records) :]
 
         for db_rec, wf in zip(db_records, stage_wiki):
-            conn.execute(
-                "UPDATE games SET home=?, away=?, date_utc=?, time_utc=? WHERE id=?",
-                (wf["home"], wf["away"], wf["date_utc"], wf["time_utc"], db_rec["id"]),
-            )
-        print(f"  {stage}: {len(stage_wiki)}/{len(db_records)} records updated")
+            _apply_fixture(conn, db_rec["id"], wf)
 
-    conn.commit()
-    conn.close()
+        print(f"  {stage}: {len(stage_wiki)}/{len(db_records)} records synced")
+
     print("Knockout stage done.\n")
 
 
 def main():
     db.init_db()
-    update_group_stage()
-    update_knockout_stage()
+    conn = db.get_conn()
+    try:
+        update_group_stage(conn)
+        update_knockout_stage(conn)
+        conn.commit()
+    except Exception as exc:
+        conn.rollback()
+        print(f"ERROR: {exc}", file=sys.stderr)
+        sys.exit(1)
+    finally:
+        conn.close()
     print("Schedule update complete.")
 
 
