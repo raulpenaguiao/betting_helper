@@ -45,25 +45,35 @@ jobs:
           script: |
             set -e
 
-            cd /opt/betting_helper
+            REPO="https://github.com/raulpenaguiao/betting_helper"
+            DEST="/opt/betting_helper"
 
-            # Pull latest code
+            # First-time setup
+            if [ ! -d "$DEST/.git" ]; then
+              git clone "$REPO" "$DEST"
+            fi
+
+            cd "$DEST"
             git pull origin main
 
-            # Install/update Python dependencies
+            # Create venv if missing
+            if [ ! -d "venv" ]; then
+              python3 -m venv venv
+            fi
+
             source venv/bin/activate
             pip install -r requirements.txt --quiet
 
-            # Install systemd units if they were updated
-            sudo cp deploy/betting-helper.service        /etc/systemd/system/
-            sudo cp deploy/betting-helper-update.service /etc/systemd/system/
-            sudo cp deploy/betting-helper-update.timer   /etc/systemd/system/
-            sudo systemctl daemon-reload
+            # Install systemd units
+            cp deploy/betting-helper.service        /etc/systemd/system/
+            cp deploy/betting-helper-update.service /etc/systemd/system/
+            cp deploy/betting-helper-update.timer   /etc/systemd/system/
+            systemctl daemon-reload
 
             # Restart app
-            sudo systemctl restart betting-helper
+            systemctl restart betting-helper
 
             # Ensure hourly sync timer is running
-            sudo systemctl enable --now betting-helper-update.timer
+            systemctl enable --now betting-helper-update.timer
 
             echo "Deploy complete — $(date -u)"
