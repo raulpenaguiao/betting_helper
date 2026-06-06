@@ -4,6 +4,7 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from typing import Optional
 import pathlib
+import anthropic
 
 import database as db
 from bet_engine import compute_best_bets
@@ -124,6 +125,54 @@ def get_settings():
 def patch_settings(updates: dict):
     db.update_settings(updates)
     return db.get_settings()
+
+
+# ── image parse ───────────────────────────────────────────────────────────────
+
+class ImageBody(BaseModel):
+    image_data: str  # base64-encoded
+    media_type: str  # e.g. "image/jpeg"
+
+@app.post("/api/parse-image")
+def parse_image_endpoint(body: ImageBody):
+    settings = db.get_settings()
+    api_key = settings.get("anthropic_api_key") or None
+    try:
+        client = anthropic.Anthropic(**({ "api_key": api_key } if api_key else {}))
+    except Exception as e:
+        raise HTTPException(500, f"Anthropic client error: {e}")
+    try:
+        message = client.messages.create(
+            model="claude-sonnet-4-6",
+            max_tokens=1024,
+            messages=[{
+                "role": "user",
+                "content": [
+                    {
+                        "type": "image",
+                        "source": {
+                            "type": "base64",
+                            "media_type": body.media_type,
+                            "data": body.image_data,
+                        },
+                    },
+                    {
+                        "type": "text",
+                        "text": (
+                            "This image contains a table of betting odds for football final scores. "
+                            "Each entry pairs a fractional odd (format X/Y, where X and Y are integers) "
+                            "with a scoreline (format X-Y, where X and Y are integers). "
+                            "Extract every such pair faithfully. "
+                            "Output one pair per line in the format: X/Y X-Y (odds first, then score). "
+                            "Output only the pairs, no other text."
+                        ),
+                    },
+                ],
+            }],
+        )
+        return {"text": message.content[0].text}
+    except Exception as e:
+        raise HTTPException(502, f"Claude API error: {e}")
 
 
 # ── scraper / update ──────────────────────────────────────────────────────────
