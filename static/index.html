@@ -803,7 +803,7 @@ function renderInsightGrid(game) {
     for (let c = 0; c < 4; c++) {
       const h = state.insightOffset.home + c;
       const odd = oddsMap[`${h}-${a}`];
-      const prob = hybridProbs[`${h}-${a}`];
+      const prob = odd ? (1 / odd.odd_value) : hybridProbs[`${h}-${a}`];
       const pts = computePoints(predH, predA, h, a);
       const sel = predH === h && predA === a;
       const isBest = best && best.home_goals === h && best.away_goals === a;
