@@ -738,7 +738,7 @@ function computeInsightBreakdown(predH, predA, C, p, q, oddsMap = null) {
   const MAX = 10;
   const probs = oddsMap ? buildHybridProbs(C, p, q, oddsMap) : null;
   const rows = [];
-  let ev = 0;
+  let ev = 0, displayEv = 0;
   for (let h = 0; h <= MAX; h++) {
     for (let a = 0; a <= MAX; a++) {
       const pts = computePoints(predH, predA, h, a);
@@ -746,11 +746,15 @@ function computeInsightBreakdown(predH, predA, C, p, q, oddsMap = null) {
       const prob = probs ? probs[`${h}-${a}`] : C * Math.pow(p, h) * Math.pow(q, a);
       const contrib = prob * pts;
       ev += contrib;
-      rows.push({ h, a, prob, pts, contrib });
+      const odd = oddsMap?.[`${h}-${a}`];
+      const displayProb = odd ? (1 / odd.odd_value) : prob;
+      const displayContrib = displayProb * pts;
+      displayEv += displayContrib;
+      rows.push({ h, a, prob, displayProb, pts, contrib, displayContrib });
     }
   }
   rows.sort((x, y) => y.contrib - x.contrib);
-  return { rows, ev };
+  return { rows, ev, displayEv };
 }
 
 function renderInsightGrid(game) {
@@ -770,8 +774,8 @@ function renderInsightGrid(game) {
 
   // Right panel — prediction & EV
   document.getElementById('insight-pred-score').textContent = `${predH}–${predA}`;
-  const { rows, ev } = computeInsightBreakdown(predH, predA, C, p, q, oddsMap);
-  document.getElementById('insight-ev-value').textContent = ev.toFixed(3);
+  const { rows, ev, displayEv } = computeInsightBreakdown(predH, predA, C, p, q, oddsMap);
+  document.getElementById('insight-ev-value').textContent = displayEv.toFixed(3);
 
   // Right panel — breakdown table (top 15 non-zero rows)
   const BREAKDOWN_ROWS = 20;
@@ -781,14 +785,14 @@ function renderInsightGrid(game) {
   for (const r of topRows) {
     bhtml += `<tr>
       <td>${r.h}–${r.a}</td>
-      <td>${(r.prob * 100).toFixed(1)}%</td>
+      <td>${(r.displayProb * 100).toFixed(1)}%</td>
       <td>${r.pts}</td>
-      <td>${r.contrib.toFixed(3)}</td>
+      <td>${r.displayContrib.toFixed(3)}</td>
     </tr>`;
   }
   for (let i = topRows.length; i < BREAKDOWN_ROWS; i++)
     bhtml += `<tr><td>&nbsp;</td><td></td><td></td><td></td></tr>`;
-  bhtml += `<tr><td colspan="3">Expected score</td><td>${ev.toFixed(3)}</td></tr>`;
+  bhtml += `<tr><td colspan="3">Expected score</td><td>${displayEv.toFixed(3)}</td></tr>`;
   bhtml += '</tbody></table>';
   document.getElementById('insight-breakdown').innerHTML = bhtml;
 
