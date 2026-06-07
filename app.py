@@ -132,11 +132,11 @@ def patch_settings(updates: dict):
 class ImageBody(BaseModel):
     image_data: str  # base64-encoded
     media_type: str  # e.g. "image/jpeg"
+    api_key: Optional[str] = None
 
 @app.post("/api/parse-image")
 def parse_image_endpoint(body: ImageBody):
-    settings = db.get_settings()
-    api_key = settings.get("anthropic_api_key") or None
+    api_key = body.api_key or None
     try:
         client = anthropic.Anthropic(**({ "api_key": api_key } if api_key else {}))
     except Exception as e:

@@ -615,8 +615,14 @@ function formatTime(date_utc, time_utc, tz, timeOnly = false) {
   return time_utc ? `${dateStr} · ${parts.hour}:${parts.minute}` : dateStr;
 }
 
+const TEAM_NAME_MAP = {
+  'united states': 'usa',
+};
+
 function teamSlug(name) {
-  return name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+  const lower = name.toLowerCase();
+  if (TEAM_NAME_MAP[lower]) return TEAM_NAME_MAP[lower];
+  return lower.replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 }
 
 function oddscheckerUrl(home, away) {
@@ -1509,7 +1515,7 @@ async function loadSettings() {
       </div>`;
   });
   const apiKeyEl = document.getElementById('setting-anthropic_api_key');
-  if (apiKeyEl) apiKeyEl.value = state.settings['anthropic_api_key'] || '';
+  if (apiKeyEl) apiKeyEl.value = localStorage.getItem('anthropic_api_key') || '';
 }
 
 document.getElementById('btn-save-settings').addEventListener('click', async () => {
@@ -1523,7 +1529,7 @@ document.getElementById('btn-save-settings').addEventListener('click', async () 
     updates[key] = isNaN(Number(raw)) ? raw : Number(raw);
   });
   const apiKeyEl = document.getElementById('setting-anthropic_api_key');
-  if (apiKeyEl) updates['anthropic_api_key'] = apiKeyEl.value;
+  if (apiKeyEl) localStorage.setItem('anthropic_api_key', apiKeyEl.value);
   try {
     await PATCH('/api/settings', updates);
     Object.assign(state.settings, updates);
@@ -1734,7 +1740,7 @@ document.getElementById('btn-image-odds-process').addEventListener('click', asyn
       reader.onerror = reject;
       reader.readAsDataURL(imageOddsFile);
     });
-    const result = await POST('/api/parse-image', { image_data: base64, media_type: imageOddsFile.type || 'image/jpeg' });
+    const result = await POST('/api/parse-image', { image_data: base64, media_type: imageOddsFile.type || 'image/jpeg', api_key: localStorage.getItem('anthropic_api_key') || undefined });
     closeImageOddsModal();
     openTextOddsModal(result.text);
   } catch (e) {
