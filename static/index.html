@@ -31,13 +31,12 @@
   #content { overflow-y: auto; padding: 16px; }
 
   /* Responsive column visibility */
-  .col-group, .col-odds, .col-action { }
   @media (max-width: 900px) {
     main { grid-template-columns: 200px 1fr; }
-    .col-group, .col-odds, .col-action { display: none; }
+    .col-group, .col-stage { display: none; }
   }
   #btn-filters { display: none; }
-  @media (max-width: 640px) {
+  @media (max-width: 1100px) {
     #btn-filters { display: inline-flex; }
     main { grid-template-columns: 1fr; }
     #sidebar {
@@ -46,10 +45,17 @@
       padding: 12px; max-height: 50vh; overflow-y: auto;
     }
     #sidebar.open { display: block; }
-    .col-stage, .col-odds, .col-action { display: none; }
     .settings-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .col-odds, .col-bestbet { display: table-cell; }
     #content { padding: 10px; }
     #game-panel { padding: 14px; }
+    #games-table td, #games-table th { padding: 6px 5px; font-size: 12px; }
+    .match-teams { font-size: 12px; gap: 4px; }
+    .odds-cell-btn { font-size: 11px; padding: 3px 5px; }
+    .team-name { font-size: 0; }
+    .team-name::after { content: attr(data-code); font-size: 12px; font-weight: 500; }
   }
 
   /* Buttons */
@@ -166,7 +172,7 @@
   .prob-bar { height: 100%; background: var(--accent2); border-radius: 4px; }
 
   .col-bestbet { white-space: nowrap; }
-  @media (max-width: 900px) { .col-bestbet { display: none; } }
+  @media (max-width: 900px) and (min-width: 641px) { .col-bestbet { display: none; } }
   .best-bet-btn { background: none; border: 1px solid var(--border); cursor: pointer; padding: 2px 8px; border-radius: 6px; font-size: 13px; font-weight: 600; color: var(--text); text-align: left; }
   .best-bet-btn:hover { background: var(--surface2); border-color: var(--accent2); }
   .odds-cell-btn { background: none; border: 1px solid var(--border); cursor: pointer; padding: 2px 8px; border-radius: 6px; font-size: 12px; color: var(--muted); }
@@ -218,23 +224,8 @@
     <!-- Sidebar -->
     <div id="sidebar">
       <div class="filter-section">
-        <h3>Stage</h3>
-        <div class="filter-list" id="stage-filter">
-          <div class="filter-item active" data-stage="">All stages</div>
-          <div class="filter-item" data-stage="Group">Group Stage</div>
-          <div class="filter-item" data-stage="Round of 32">Round of 32</div>
-          <div class="filter-item" data-stage="Round of 16">Round of 16</div>
-          <div class="filter-item" data-stage="Quarterfinal">Quarterfinal</div>
-          <div class="filter-item" data-stage="Semifinal">Semifinal</div>
-          <div class="filter-item" data-stage="Third Place">Third Place</div>
-          <div class="filter-item" data-stage="Final">Final</div>
-        </div>
-      </div>
-      <div class="filter-section" id="group-filter-section">
-        <h3>Group</h3>
-        <div class="filter-list" id="group-filter">
-          <div class="filter-item active" data-group="">All groups</div>
-        </div>
+        <h3>Filter</h3>
+        <div class="filter-list" id="combined-filter"></div>
       </div>
     </div>
 
@@ -536,45 +527,46 @@ function switchTab(tab) {
 document.querySelectorAll('.tab-btn').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
 
 // ── filters ────────────────────────────────────────────────────────────────
-function initGroupFilter() {
+const KNOCKOUT_STAGES = ['Round of 32', 'Round of 16', 'Quarterfinal', 'Semifinal', 'Third Place', 'Final'];
+
+function initCombinedFilter() {
+  const container = document.getElementById('combined-filter');
   const groups = [...new Set(state.games.filter(g => g.grp).map(g => g.grp))].sort();
-  const container = document.getElementById('group-filter');
-  container.innerHTML = '<div class="filter-item active" data-group="">All groups</div>';
-  groups.forEach(g => {
+
+  const items = [
+    { label: 'All', stage: '', group: '' },
+    ...groups.map(g => ({ label: `Group ${g}`, stage: 'Group', group: g })),
+    ...KNOCKOUT_STAGES.map(s => ({ label: s, stage: s, group: '' })),
+  ];
+
+  container.innerHTML = '';
+  items.forEach(item => {
     const el = document.createElement('div');
     el.className = 'filter-item';
-    el.dataset.group = g;
-    el.textContent = `Group ${g}`;
+    el.dataset.stage = item.stage;
+    el.dataset.group = item.group;
+    el.textContent = item.label;
+    if (item.stage === state.stageFilter && item.group === (state.groupFilter || '')) {
+      el.classList.add('active');
+    }
     container.appendChild(el);
   });
-  container.querySelectorAll('.filter-item').forEach(el => {
-    el.addEventListener('click', () => {
-      state.groupFilter = el.dataset.group;
-      state.keyboardIdx = -1;
-      container.querySelectorAll('.filter-item').forEach(x => x.classList.toggle('active', x === el));
-      renderGames();
-    });
+
+  container.addEventListener('click', e => {
+    const item = e.target.closest('.filter-item');
+    if (!item) return;
+    state.stageFilter = item.dataset.stage;
+    state.groupFilter = item.dataset.group;
+    state.keyboardIdx = -1;
+    container.querySelectorAll('.filter-item').forEach(x => x.classList.toggle('active', x === item));
+    renderGames();
   });
 }
-
-document.getElementById('stage-filter').addEventListener('click', e => {
-  const item = e.target.closest('.filter-item');
-  if (!item) return;
-  state.stageFilter = item.dataset.stage;
-  state.keyboardIdx = -1;
-  document.getElementById('stage-filter').querySelectorAll('.filter-item')
-    .forEach(x => x.classList.toggle('active', x === item));
-  // hide group filter for non-group stages
-  document.getElementById('group-filter-section').classList.toggle(
-    'hidden', state.stageFilter && state.stageFilter !== 'Group'
-  );
-  renderGames();
-});
 
 // ── load games ─────────────────────────────────────────────────────────────
 async function loadGames() {
   state.games = await GET('/api/games');
-  initGroupFilter();
+  initCombinedFilter();
   renderGames();
 }
 
@@ -618,6 +610,25 @@ function formatTime(date_utc, time_utc, tz, timeOnly = false) {
 const TEAM_NAME_MAP = {
   'united states': 'usa',
 };
+
+const TEAM_CODES = {
+  'Algeria': 'ALG', 'Argentina': 'ARG', 'Australia': 'AUS', 'Austria': 'AUT',
+  'Belgium': 'BEL', 'Bosnia and Herzegovina': 'BIH', 'Brazil': 'BRA', 'Canada': 'CAN',
+  'Cape Verde': 'CPV', 'Colombia': 'COL', 'Croatia': 'CRO', 'Curaçao': 'CUW',
+  'Czech Republic': 'CZE', 'DR Congo': 'COD', 'Ecuador': 'ECU', 'Egypt': 'EGY',
+  'England': 'ENG', 'France': 'FRA', 'Germany': 'GER', 'Ghana': 'GHA',
+  'Haiti': 'HAI', 'Iran': 'IRN', 'Iraq': 'IRQ', 'Ivory Coast': 'CIV',
+  'Japan': 'JPN', 'Jordan': 'JOR', 'Mexico': 'MEX', 'Morocco': 'MAR',
+  'Netherlands': 'NED', 'New Zealand': 'NZL', 'Norway': 'NOR', 'Panama': 'PAN',
+  'Paraguay': 'PAR', 'Portugal': 'POR', 'Qatar': 'QAT', 'Saudi Arabia': 'KSA',
+  'Scotland': 'SCO', 'Senegal': 'SEN', 'South Africa': 'RSA', 'South Korea': 'KOR',
+  'Spain': 'ESP', 'Sweden': 'SWE', 'Switzerland': 'SUI', 'Tunisia': 'TUN',
+  'Turkey': 'TUR', 'United States': 'USA', 'Uruguay': 'URU', 'Uzbekistan': 'UZB',
+};
+
+function teamCode(name) {
+  return TEAM_CODES[name] || name.slice(0, 3).toUpperCase();
+}
 
 function teamSlug(name) {
   const lower = name.toLowerCase();
@@ -887,7 +898,7 @@ function renderGames() {
     const timeStr = primaryTime ? `${primaryTime}${extraTimes}` : null;
     tr.innerHTML = `
       <td class="col-time">${timeStr || '<span style="color:var(--muted)">—</span>'}</td>
-      <td class="col-match"><div class="match-teams">${g.home} <span class="vs">vs</span> ${g.away}</div></td>
+      <td class="col-match"><div class="match-teams"><span class="team-name" data-code="${teamCode(g.home)}">${g.home}</span> <span class="vs">vs</span> <span class="team-name" data-code="${teamCode(g.away)}">${g.away}</span></div></td>
       <td class="col-stage">${g.stage}</td>
       <td class="col-group">${g.grp ? `<span class="badge badge-group">${g.grp}</span>` : '—'}</td>
       <td class="col-score">${score} ${g.played ? '<span class="played-dot" title="Played"></span>' : ''}</td>
